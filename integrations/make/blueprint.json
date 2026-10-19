@@ -1,0 +1,239 @@
+{
+  "name": "AI Lead Triage",
+  "flow": [
+    {
+      "id": 1,
+      "module": "gateway:CustomWebHook",
+      "version": 1,
+      "parameters": {
+        "hook": null,
+        "maxResults": 1
+      },
+      "mapper": {},
+      "metadata": {
+        "designer": {
+          "x": 0,
+          "y": 0,
+          "name": "Lead webhook (JSON pass-through)"
+        }
+      }
+    },
+    {
+      "id": 2,
+      "module": "http:ActionSendData",
+      "version": 3,
+      "parameters": {
+        "handleErrors": true,
+        "useNewZLibDeCompress": true
+      },
+      "mapper": {
+        "url": "https://YOUR-CORE-URL/triage",
+        "method": "post",
+        "headers": [
+          {
+            "name": "X-API-Key",
+            "value": "REPLACE_WITH_CORE_API_KEY"
+          }
+        ],
+        "qs": [],
+        "bodyType": "raw",
+        "contentType": "application/json",
+        "data": "{{1.value}}",
+        "parseResponse": true,
+        "timeout": "60",
+        "serializeUrl": false,
+        "shareCookies": false,
+        "ca": "",
+        "rejectUnauthorized": true,
+        "followRedirect": true,
+        "useQuerystring": false,
+        "gzip": true,
+        "useMtls": false,
+        "followAllRedirects": false,
+        "authUser": "",
+        "authPass": ""
+      },
+      "metadata": {
+        "designer": {
+          "x": 300,
+          "y": 0,
+          "name": "AI triage (core /triage)"
+        }
+      }
+    },
+    {
+      "id": 3,
+      "module": "builtin:BasicRouter",
+      "version": 1,
+      "mapper": null,
+      "metadata": {
+        "designer": {
+          "x": 600,
+          "y": 0
+        }
+      },
+      "routes": [
+        {
+          "flow": [
+            {
+              "id": 4,
+              "module": "google-sheets:addRow",
+              "version": 2,
+              "parameters": {
+                "__IMTCONN__": null
+              },
+              "filter": {
+                "name": "Every lead except discard",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{2.data.routing}}",
+                      "b": "discard",
+                      "o": "text:notequal"
+                    }
+                  ]
+                ]
+              },
+              "mapper": {
+                "mode": "select",
+                "spreadsheetId": "REPLACE_WITH_SPREADSHEET_ID",
+                "sheetId": "Leads",
+                "includesHeaders": true,
+                "insertDataOption": "INSERT_ROWS",
+                "valueInputOption": "RAW",
+                "insertUnformatted": false,
+                "values": {
+                  "0": "{{formatDate(now; \"YYYY-MM-DDTHH:mm:ssZ\")}}",
+                  "1": "{{2.data.meta.lead_id}}",
+                  "2": "{{2.data.lead.name}}",
+                  "3": "{{2.data.lead.email}}",
+                  "4": "{{ifempty(2.data.lead.company; 2.data.enrichment.company_guess)}}",
+                  "5": "{{2.data.lead.source}}",
+                  "6": "{{2.data.category}}",
+                  "7": "{{2.data.lead_score}}",
+                  "8": "{{2.data.routing}}",
+                  "9": "{{2.data.urgency}}",
+                  "10": "{{2.data.budget_signal}}",
+                  "11": "{{2.data.summary}}",
+                  "12": "{{2.data.enrichment.email_type}}",
+                  "13": "{{2.data.enrichment.domain}}",
+                  "14": "{{join(2.data.score_reasons; \"; \")}}",
+                  "15": "{{2.data.suggested_reply}}",
+                  "16": "{{2.data.meta.mode}}"
+                }
+              },
+              "metadata": {
+                "designer": {
+                  "x": 900,
+                  "y": -200,
+                  "name": "Log to CRM sheet"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "flow": [
+            {
+              "id": 5,
+              "module": "slack:CreateMessage",
+              "version": 4,
+              "parameters": {
+                "__IMTCONN__": null
+              },
+              "filter": {
+                "name": "Hot leads only",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{2.data.routing}}",
+                      "b": "hot",
+                      "o": "text:equal"
+                    }
+                  ]
+                ]
+              },
+              "mapper": {
+                "channelWType": "manualy",
+                "channel": "REPLACE_WITH_SLACK_CHANNEL_ID",
+                "text": ":fire: *Hot lead* from {{replace(replace(2.data.lead.name; \"<\"; \"\"); \">\"; \"\")}}{{if(2.data.lead.company; \" (\"; \"\")}}{{2.data.lead.company}}{{if(2.data.lead.company; \")\"; \"\")}}\n*Score:* {{2.data.lead_score}}/100 | *Urgency:* {{2.data.urgency}} | *Budget:* {{2.data.budget_signal}}\n*Summary:* {{replace(replace(2.data.summary; \"<\"; \"\"); \">\"; \"\")}}\n{{2.data.lead.email}} | draft reply saved in Gmail"
+              },
+              "metadata": {
+                "designer": {
+                  "x": 900,
+                  "y": 0,
+                  "name": "Slack hot lead alert"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "flow": [
+            {
+              "id": 6,
+              "module": "google-email:ActionCreateDraft",
+              "version": 2,
+              "parameters": {
+                "__IMTCONN__": null
+              },
+              "filter": {
+                "name": "Hot or warm",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{2.data.routing}}",
+                      "b": "hot",
+                      "o": "text:equal"
+                    }
+                  ],
+                  [
+                    {
+                      "a": "{{2.data.routing}}",
+                      "b": "warm",
+                      "o": "text:equal"
+                    }
+                  ]
+                ]
+              },
+              "mapper": {
+                "to": [
+                  "{{2.data.lead.email}}"
+                ],
+                "subject": "Thanks for getting in touch",
+                "bodyType": "rawHtml",
+                "content": "{{replace(2.data.suggested_reply; newline; \"<br>\")}}"
+              },
+              "metadata": {
+                "designer": {
+                  "x": 900,
+                  "y": 200,
+                  "name": "Gmail draft reply"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "instant": true,
+    "version": 1,
+    "scenario": {
+      "roundtrips": 1,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "autoCommitTriggerLast": true,
+      "sequential": false,
+      "confidential": false,
+      "dataloss": false,
+      "dlq": false,
+      "freshVariables": false
+    },
+    "designer": {
+      "orphans": []
+    },
+    "zone": "eu1.make.com"
+  }
+}
