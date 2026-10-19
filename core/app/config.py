@@ -57,8 +57,17 @@ class Settings:
         return bool(self.api_keys)
 
 
+def _api_key() -> str | None:
+    # LEAD_TRIAGE_API_KEY is a fallback for hosts that reserve or strip ANTHROPIC_API_KEY.
+    for name in ("ANTHROPIC_API_KEY", "LEAD_TRIAGE_API_KEY"):
+        value = os.getenv(name, "").strip()
+        if value:
+            return value
+    return None
+
+
 def load_settings() -> Settings:
-    api_key = os.getenv("ANTHROPIC_API_KEY") or None
+    api_key = _api_key()
     mock_raw = os.getenv("MOCK_MODE", "auto").strip().lower()
     if mock_raw in {"1", "true", "yes", "on"}:
         mock = True

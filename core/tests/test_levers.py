@@ -220,3 +220,17 @@ def test_defaults_are_haiku_with_sonnet_escalation(monkeypatch):
     assert s.prompt_caching and s.few_shot and s.prefilter and s.temperature is None
     monkeypatch.setenv("ESCALATION_MODEL", "")
     assert load_settings().escalation_model is None
+
+
+def test_lead_triage_api_key_is_a_fallback_for_anthropic_api_key(monkeypatch):
+    for var in ("ANTHROPIC_API_KEY", "LEAD_TRIAGE_API_KEY", "MOCK_MODE"):
+        monkeypatch.delenv(var, raising=False)
+    s = load_settings()
+    assert s.anthropic_api_key is None and s.mock_mode
+    monkeypatch.setenv("LEAD_TRIAGE_API_KEY", "sk-fallback")
+    s = load_settings()
+    assert s.anthropic_api_key == "sk-fallback" and not s.mock_mode
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-primary")
+    assert load_settings().anthropic_api_key == "sk-primary"
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "  ")
+    assert load_settings().anthropic_api_key == "sk-fallback"
