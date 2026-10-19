@@ -12,7 +12,7 @@ POST /webhook/lead  ->  core POST /triage  ->  Google Sheets (hot, warm, cold)
 
 ```bash
 npm install
-npm test              # 33 vitest tests, no credentials needed
+npm test              # 41 vitest tests, no credentials needed
 npm run build
 CORE_URL=http://localhost:8000 CORE_API_KEY=dev-key-change-me npm start
 ```

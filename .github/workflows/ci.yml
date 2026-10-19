@@ -1,0 +1,101 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  core:
+    name: Python core (lint + pytest)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: core
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: core/requirements-dev.txt
+      - run: pip install -r requirements-dev.txt
+      - run: ruff check .
+      - run: ruff format --check .
+      - run: pytest -q
+
+  evals:
+    name: Evals (mock mode)
+    runs-on: ubuntu-latest
+    env:
+      MOCK_MODE: "true"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: core/requirements.txt
+      - run: pip install -r core/requirements.txt
+      - run: python evals/run_evals.py --mode mock --min-category-accuracy 0.9
+      - run: cat evals/results.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eval-results
+          path: evals/results.*
+
+  node:
+    name: Node worker (typecheck + vitest)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: integrations/node
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: integrations/node/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+
+  integrations:
+    name: Integration files + house style
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Workflow and blueprint JSON parse
+        run: |
+          python -m json.tool integrations/n8n/lead-triage.workflow.json > /dev/null
+          python -m json.tool integrations/make/blueprint.json > /dev/null
+          python -m json.tool data/sample_leads.json > /dev/null
+      - name: No em dashes anywhere
+        run: |
+          EM_DASH="$(printf '\xe2\x80\x94')"
+          if grep -rn "$EM_DASH" --exclude-dir=.git --exclude-dir=node_modules --exclude=*.png . ; then
+            echo "Found em dashes; replace them with commas or full stops." && exit 1
+          fi
+
+  docker:
+    name: Docker images build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t lead-triage-core ./core
+      - run: docker build -t lead-triage-worker ./integrations/node
+      - name: Core container answers /health
+        run: |
+          docker run -d --name core -p 8000:8000 -e API_KEYS=ci-key lead-triage-core
+          for i in $(seq 1 20); do curl -fsS localhost:8000/health && exit 0; sleep 1; done
+          docker logs core; exit 1
