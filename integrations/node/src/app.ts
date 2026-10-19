@@ -16,6 +16,8 @@ export interface AppDeps {
   store?: IdempotencyStore;
   retry?: RetryOptions;
   webhookSecret?: string;
+  /** Browser origins allowed to post (for the demo form). Empty means no CORS headers. */
+  corsOrigins?: string[];
   log?: (event: string, data: Record<string, unknown>) => void;
 }
 
@@ -46,6 +48,21 @@ export function createApp(deps: AppDeps) {
   const log = deps.log ?? jsonLogger;
   const inflight = new InFlight<ProcessResult>();
   const app = express();
+  const corsOrigins = deps.corsOrigins ?? [];
+  app.use((req, res, next) => {
+    const origin = req.header("origin");
+    if (origin && (corsOrigins.includes("*") || corsOrigins.includes(origin))) {
+      res.setHeader("Access-Control-Allow-Origin", corsOrigins.includes("*") ? "*" : origin);
+      res.setHeader("Vary", "Origin");
+      res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+      res.setHeader("Access-Control-Allow-Headers", "Content-Type, X-Webhook-Secret");
+    }
+    if (req.method === "OPTIONS") {
+      res.sendStatus(204);
+      return;
+    }
+    next();
+  });
   app.use(express.json({ limit: "64kb" }));
 
   async function processLead(key: string, lead: Lead): Promise<ProcessResult> {

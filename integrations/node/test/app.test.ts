@@ -121,6 +121,16 @@ describe("POST /webhook/lead", () => {
     expect((await request(app).post("/webhook/lead").set("X-Webhook-Secret", "s3cret").send(lead)).status).toBe(200);
   });
 
+  it("answers CORS preflight only for allowed origins", async () => {
+    const sinks = { crm: new ConsoleCrmSink(quiet), alert: new ConsoleAlertSink(quiet), draft: new ConsoleDraftSink(quiet) };
+    const app = createApp({ triage: { triage: async () => result() }, sinks, corsOrigins: ["http://localhost:8080"], log: quiet });
+    const ok = await request(app).options("/webhook/lead").set("Origin", "http://localhost:8080");
+    expect(ok.status).toBe(204);
+    expect(ok.headers["access-control-allow-origin"]).toBe("http://localhost:8080");
+    const blocked = await request(app).options("/webhook/lead").set("Origin", "https://evil.example.com");
+    expect(blocked.headers["access-control-allow-origin"]).toBeUndefined();
+  });
+
   it("reports sink names on /health", async () => {
     const { app } = setup();
     const res = await request(app).get("/health");

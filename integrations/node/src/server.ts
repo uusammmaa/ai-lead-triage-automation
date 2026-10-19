@@ -9,6 +9,7 @@ const app = createApp({
   triage: new HttpTriageClient(config.coreUrl, config.coreApiKey),
   sinks,
   webhookSecret: config.webhookSecret,
+  corsOrigins: config.corsOrigins,
 });
 
 app.listen(config.port, () => {

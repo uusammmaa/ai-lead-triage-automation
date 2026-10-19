@@ -10,6 +10,7 @@ export interface WorkerConfig {
   coreUrl: string;
   coreApiKey?: string;
   webhookSecret?: string;
+  corsOrigins: string[];
 }
 
 type Env = Record<string, string | undefined>;
@@ -20,6 +21,10 @@ export function loadConfig(env: Env = process.env): WorkerConfig {
     coreUrl: env.CORE_URL ?? "http://localhost:8000",
     coreApiKey: env.CORE_API_KEY || undefined,
     webhookSecret: env.WEBHOOK_SECRET || undefined,
+    corsOrigins: (env.CORS_ORIGINS ?? "")
+      .split(",")
+      .map((o) => o.trim())
+      .filter(Boolean),
   };
 }
 

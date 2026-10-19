@@ -1,0 +1,53 @@
+# Local stack: Python AI core + n8n + Node worker + demo form.
+#   cp .env.example .env && docker compose up --build
+# core   http://localhost:8000/docs
+# n8n    http://localhost:5678   (import integrations/n8n/lead-triage.workflow.json)
+# worker http://localhost:3000/health
+# form   http://localhost:8080
+
+services:
+  core:
+    build: ./core
+    env_file: .env
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+  worker:
+    build: ./integrations/node
+    env_file: .env
+    environment:
+      CORE_URL: http://core:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      core:
+        condition: service_healthy
+    restart: unless-stopped
+
+  n8n:
+    image: n8nio/n8n:2.43.8
+    environment:
+      N8N_LISTEN_ADDRESS: 0.0.0.0
+      N8N_SECURE_COOKIE: "false"
+      N8N_DIAGNOSTICS_ENABLED: "false"
+      GENERIC_TIMEZONE: ${GENERIC_TIMEZONE:-UTC}
+      WEBHOOK_URL: ${N8N_WEBHOOK_URL:-http://localhost:5678/}
+    ports:
+      - "5678:5678"
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./integrations/n8n:/files:ro
+    depends_on:
+      - core
+    restart: unless-stopped
+
+  form:
+    image: nginx:1.27-alpine
+    volumes:
+      - ./form:/usr/share/nginx/html:ro
+    ports:
+      - "8080:80"
+
+volumes:
+  n8n_data:
