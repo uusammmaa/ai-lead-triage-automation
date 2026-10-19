@@ -1,0 +1,21 @@
+{
+  "run_at": "2026-10-19T10:24:34+00:00",
+  "mode": "mock",
+  "model": null,
+  "leads": 30,
+  "category_accuracy": 1.0,
+  "routing_accuracy": 1.0,
+  "injection_resisted": "2/2",
+  "avg_latency_ms": 1.2,
+  "p95_latency_ms": 2,
+  "modes": {
+    "mock": 30
+  },
+  "measured_cost_per_1000_usd": 0.0,
+  "projected_live_cost_per_1000_usd": 10.31,
+  "projected_tokens_per_lead": {
+    "input": 2304,
+    "output": 570
+  },
+  "misses": []
+}

@@ -1,0 +1,132 @@
+# Lead scoring rules. This is the file a client edits.
+#
+# Claude reads these rules through the lookup_scoring_rules tool, and the
+# offline rules engine (mock mode and LLM fallback) applies them directly, so
+# one edit changes behaviour in both paths. Restart the core after editing.
+
+version: 1
+
+business:
+  name: "Example Automation Co"
+  # Who a hot lead looks like. Claude uses this description when scoring.
+  ideal_customer: >-
+    B2B companies with roughly 10 to 500 staff that receive a steady flow of
+    inbound enquiries (web forms, email, demo requests) and want them
+    qualified, routed and answered faster. Clear budget, a named timeline and
+    a business email are the strongest buying signals.
+  services:
+    - AI lead triage and routing
+    - CRM and inbox automation (HubSpot, Pipedrive, Salesforce, Google Sheets)
+    - n8n, Zapier and Make workflow builds
+
+# Score thresholds that decide routing. Code applies these after the model
+# scores the lead, so routing policy never depends on model output alone.
+routing:
+  hot_min_score: 75
+  warm_min_score: 45
+  # Categories that always route the same way, whatever their score.
+  category_overrides:
+    spam: discard
+    support: cold
+    job_seeker: cold
+  # A lead that contains instructions aimed at the AI is never auto-routed hot.
+  max_routing_when_injection_detected: warm
+
+scoring:
+  category_base:
+    sales_inquiry: 40
+    partnership: 35
+    other: 10
+    support: 10
+    job_seeker: 5
+    spam: 0
+  modifiers:
+    business_email: 10
+    free_email: 0
+    disposable_email: -25
+    company_provided: 5
+    budget_explicit: 25
+    budget_mentioned: 10
+    urgency_high: 15
+    urgency_medium: 5
+    crm_or_tool_mentioned: 5
+    volume_mentioned: 5
+
+# Keyword lists used by the offline rules engine. Claude is told to use its
+# own judgement and treat these as hints, not as hard rules.
+keywords:
+  sales_inquiry:
+    weight: 1
+    terms: [quote, proposal, pricing, price, cost, how much, budget, interested in, interested, looking for,
+            we need, we want, we'd like, would love something, automate, automating, build, pilot,
+            demo request, book a call, a call, chatbot, case study, send info, some info, next steps]
+  support:
+    weight: 2
+    terms: [stopped, not working, isn't working, aren't firing, error, bug, broken, fails, failed, help,
+            can't find, how do i, refund, charged, invoice, reconnect, login, password, issue, outage,
+            look into, blocking]
+  partnership:
+    weight: 3
+    terms: [partnership, partner agency, white-label, white label, referral, co-marketing, collaborate,
+            collaboration, affiliate, reseller]
+  job_seeker:
+    weight: 3
+    terms: [job, internship, hiring, my cv, resume, open positions, join your team, freelancers,
+            freelancer, contract work, my rate, available for, looking for work, career]
+  spam:
+    weight: 3
+    terms: [guaranteed, first page of google, money back, seo audit, crypto, click here, limited time,
+            bonus, buy now, discount, email lists, unsubscribe, backlinks, dear sir, per day,
+            free traffic, "100%", act now, winner]
+  other:
+    weight: 3
+    terms: [student, researching, class project, school, thesis, just curious, survey]
+
+urgency:
+  high: [asap, urgent, urgently, immediately, this week, tomorrow, today, by friday, on friday,
+         end of month, within two weeks, in 2 weeks, in 3 weeks, next monday, blocking, outage,
+         is down, right away]
+  medium: [next week, next month, this month, this quarter, soon, couple weeks, couple of weeks,
+           in a few weeks]
+
+budget:
+  mentioned_terms: [budget, funds, spend, afford, few thousand]
+
+signals:
+  crm_or_tool_terms: [hubspot, salesforce, pipedrive, zoho, typeform, google sheets, slack, crm]
+  # Phrases that show inbound volume, e.g. "800 inbound requests a month".
+  volume_pattern: "\\b\\d[\\d,]*\\+?\\s*(?:inbound|demo|leads?|requests?|enquir(?:y|ies)|inquir(?:y|ies)|clients|clinics|gyms)\\b"
+
+email_domains:
+  free:
+    - gmail.com
+    - googlemail.com
+    - yahoo.com
+    - outlook.com
+    - hotmail.com
+    - live.com
+    - icloud.com
+    - aol.com
+    - proton.me
+    - protonmail.com
+    - gmx.com
+    - mail.com
+    - yandex.com
+    # Demo domain used by data/sample_leads.json
+    - freemail.example.com
+  disposable:
+    - mailinator.com
+    - guerrillamail.com
+    - 10minutemail.com
+    - tempmail.com
+    - temp-mail.org
+    - yopmail.com
+    - trashmail.com
+    - sharklasers.com
+    # Demo domain used by data/sample_leads.json
+    - tempinbox.example.com
+
+reply:
+  sender_name: "Alex from Example Automation Co"
+  booking_link: "https://example.com/book"
+  tone: "Warm, concise and professional. Plain English. No em dashes. Under 90 words."
