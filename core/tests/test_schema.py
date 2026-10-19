@@ -82,6 +82,7 @@ def test_triage_endpoint_returns_full_contract(client, headers):
     assert body.routing in {"hot", "warm", "cold", "discard"}
     assert body.enrichment.domain == "brightpath-logistics.example.com"
     assert body.meta.mode == "mock"
+    assert body.lead.email == "dana@brightpath-logistics.example.com"
     assert set(res.json()) >= {
         "category",
         "lead_score",

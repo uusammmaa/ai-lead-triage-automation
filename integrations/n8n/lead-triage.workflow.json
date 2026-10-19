@@ -1,0 +1,841 @@
+{
+  "name": "AI Lead Triage",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## AI Lead Triage\nInbound lead -> Claude triage (Python core) -> route by score.\n\n**hot**: Sheet + Slack + Gmail draft\n**warm**: Sheet + Gmail draft\n**cold**: Sheet only\n**discard**: nothing\n\nSetup: create the 4 credentials, set the core URL in *AI Triage*, the spreadsheet in *Log to CRM Sheet* and the channel in *Slack Hot Lead Alert*. The Gmail trigger is optional and disabled.",
+        "height": 300,
+        "width": 420,
+        "color": 4
+      },
+      "id": "7fc044e5-5f00-5b00-8cd2-00426e76658d",
+      "name": "Read me",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        -320
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead-triage",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "0de322f1-851e-52ee-b779-e402f642c012",
+      "name": "Lead Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "0526cbcb-213d-5920-8d36-ddb3f2101be4"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "readStatus": "unread",
+          "q": "-category:promotions -category:social"
+        },
+        "options": {}
+      },
+      "id": "9a96fc07-e4c8-59c0-ba91-56a2b9d90ccf",
+      "name": "Gmail Trigger (optional)",
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        220
+      ],
+      "disabled": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "580cd3ef-cf5c-5c21-af09-08501bbec548",
+              "name": "name",
+              "value": "={{ $json.body.name }}",
+              "type": "string"
+            },
+            {
+              "id": "4d6d1a54-a5dd-5bcd-9c44-cd994d459f26",
+              "name": "email",
+              "value": "={{ $json.body.email }}",
+              "type": "string"
+            },
+            {
+              "id": "2de37371-1362-5b42-8cf6-bc39980043a4",
+              "name": "company",
+              "value": "={{ $json.body.company || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "a8e1dfb9-5ef0-5ce1-965a-b5c947bfe7c1",
+              "name": "message",
+              "value": "={{ $json.body.message }}",
+              "type": "string"
+            },
+            {
+              "id": "d6b3e158-994c-5b9b-a508-e2da862e16a9",
+              "name": "source",
+              "value": "={{ $json.body.source || 'webform' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "89bff741-02e8-506b-9d45-07605f5babaa",
+      "name": "Normalize Webhook Lead",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        220,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "514a8fac-9f6d-5e00-84e0-9ceed2d1c2d0",
+              "name": "name",
+              "value": "={{ $json.from.value[0].name || $json.from.value[0].address }}",
+              "type": "string"
+            },
+            {
+              "id": "70c61a14-e5d3-5f44-a531-9aee57f956d8",
+              "name": "email",
+              "value": "={{ $json.from.value[0].address }}",
+              "type": "string"
+            },
+            {
+              "id": "fb2d256e-0d41-5702-a73e-b6b0e8d63cc5",
+              "name": "company",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "366293a9-e162-51d6-b456-ec4952f6b682",
+              "name": "message",
+              "value": "={{ (($json.subject || '') + '\\n\\n' + ($json.text || $json.snippet || '')).slice(0, 5000) }}",
+              "type": "string"
+            },
+            {
+              "id": "d73c6ebe-622c-5c2a-b1c4-9054f86026bf",
+              "name": "source",
+              "value": "gmail",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "275c7443-eca4-57c4-b578-34750b6b38a6",
+      "name": "Map Email to Lead",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        220,
+        220
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "f3d8afd9-0d5a-5b9d-8d9a-95d0ce1ca79d",
+      "name": "Lead",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        440,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://core:8000/triage",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ name: $json.name, email: $json.email, company: $json.company || null, message: $json.message, source: $json.source }) }}",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "50be05c6-e93c-5a53-9d73-c9b56ddac722",
+      "name": "AI Triage (core /triage)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        660,
+        100
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "Lead Triage Core API key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "582c4388-ad75-593e-997d-97e678b0c8e9",
+              "name": "lead_name",
+              "value": "={{ $('Lead').item.json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "8d8bd84b-8e20-512b-9882-23b050d586ba",
+              "name": "lead_email",
+              "value": "={{ $('Lead').item.json.email }}",
+              "type": "string"
+            },
+            {
+              "id": "9630d5b9-b459-5e3d-afdb-003119d61e18",
+              "name": "lead_company",
+              "value": "={{ $('Lead').item.json.company }}",
+              "type": "string"
+            },
+            {
+              "id": "b071715c-fd88-5299-8960-36846ce4a7d8",
+              "name": "lead_source",
+              "value": "={{ $('Lead').item.json.source }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "c5343a6a-c8f2-508c-951a-066abff00a7f",
+      "name": "Combine Lead + Triage",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        880,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "355b7a8a-966b-5c0f-80b7-dfe357dba57e",
+              "leftValue": "={{ $json.lead_source }}",
+              "rightValue": "gmail",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "41c67590-c62c-5e3b-87a3-7a78e45f55ec",
+      "name": "Came from webhook?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1100,
+        -120
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ lead_id: $json.meta.lead_id, category: $json.category, lead_score: $json.lead_score, routing: $json.routing, summary: $json.summary, suggested_reply: $json.suggested_reply, enrichment: $json.enrichment, score_reasons: $json.score_reasons, urgency: $json.urgency, budget_signal: $json.budget_signal, meta: $json.meta }) }}",
+        "options": {}
+      },
+      "id": "8f417325-956d-51c8-8c23-fcdd12bc6e4b",
+      "name": "Respond with Triage",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1320,
+        -140
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "73c2520d-4494-5e0f-8579-fa150662ac04",
+                    "leftValue": "={{ $json.routing }}",
+                    "rightValue": "hot",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "hot"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "6b01ea83-c128-5418-bd09-cf2b56b946f7",
+                    "leftValue": "={{ $json.routing }}",
+                    "rightValue": "warm",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "warm"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "0c88a521-8dbe-55b1-bc47-11180ac6f404",
+                    "leftValue": "={{ $json.routing }}",
+                    "rightValue": "cold",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "cold"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "249174ca-90c0-591d-99b8-66c649fbb7db",
+                    "leftValue": "={{ $json.routing }}",
+                    "rightValue": "discard",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "discard"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3868aaab-4f75-5c19-adda-bb727a919d67",
+      "name": "Route by Score",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        1100,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Leads",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "received_at": "={{ $now.toISO() }}",
+            "lead_id": "={{ $json.meta.lead_id }}",
+            "name": "={{ $json.lead_name }}",
+            "email": "={{ $json.lead_email }}",
+            "company": "={{ $json.lead_company || $json.enrichment.company_guess || '' }}",
+            "source": "={{ $json.lead_source }}",
+            "category": "={{ $json.category }}",
+            "lead_score": "={{ $json.lead_score }}",
+            "routing": "={{ $json.routing }}",
+            "urgency": "={{ $json.urgency }}",
+            "budget_signal": "={{ $json.budget_signal }}",
+            "summary": "={{ $json.summary }}",
+            "email_type": "={{ $json.enrichment.email_type }}",
+            "domain": "={{ $json.enrichment.domain }}",
+            "score_reasons": "={{ $json.score_reasons.join('; ') }}",
+            "suggested_reply": "={{ $json.suggested_reply }}",
+            "triage_mode": "={{ $json.meta.mode }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "received_at",
+              "displayName": "received_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "lead_id",
+              "displayName": "lead_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "company",
+              "displayName": "company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "source",
+              "displayName": "source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "category",
+              "displayName": "category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "lead_score",
+              "displayName": "lead_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "routing",
+              "displayName": "routing",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "urgency",
+              "displayName": "urgency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "budget_signal",
+              "displayName": "budget_signal",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "summary",
+              "displayName": "summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email_type",
+              "displayName": "email_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "domain",
+              "displayName": "domain",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "score_reasons",
+              "displayName": "score_reasons",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "suggested_reply",
+              "displayName": "suggested_reply",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "triage_mode",
+              "displayName": "triage_mode",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "da60663b-76c0-51d2-ae72-c6fbc5e6cad2",
+      "name": "Log to CRM Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1360,
+        60
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "#sales-leads",
+          "mode": "name"
+        },
+        "text": "=:fire: *Hot lead* from {{ $json.lead_name.replace(/[<>&]/g, '') }}{{ $json.lead_company ? ' (' + $json.lead_company.replace(/[<>&]/g, '') + ')' : '' }}\n*Score:* {{ $json.lead_score }}/100 | *Urgency:* {{ $json.urgency }} | *Budget:* {{ $json.budget_signal }}\n*Summary:* {{ $json.summary.replace(/[<>&]/g, '') }}\n{{ $json.lead_email }} | {{ $json.enrichment.email_type }} email | draft reply saved in Gmail",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "id": "1617dd2b-206d-5f48-96d5-0c4c580026f3",
+      "name": "Slack Hot Lead Alert",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [
+        1360,
+        240
+      ],
+      "credentials": {
+        "slackApi": {
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "Slack account"
+        }
+      },
+      "webhookId": "efedb656-4908-5b8b-a169-bf76fa0b741d"
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "operation": "create",
+        "subject": "Thanks for getting in touch",
+        "emailType": "text",
+        "message": "={{ $json.suggested_reply }}",
+        "options": {
+          "sendTo": "={{ $json.lead_email }}"
+        }
+      },
+      "id": "edd6f18b-b45a-5cc7-84b6-c6b85ed4032e",
+      "name": "Create Gmail Draft",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1360,
+        420
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "Gmail account"
+        }
+      },
+      "webhookId": "9d8559c4-0bb1-5dcc-bc0d-f8579e243763"
+    },
+    {
+      "parameters": {},
+      "id": "f9d71e82-a47b-5b40-81f2-06c9da1d22ab",
+      "name": "Discard (no action)",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1360,
+        600
+      ]
+    }
+  ],
+  "connections": {
+    "Lead Webhook": {
+      "main": [
+        [
+          {
+            "node": "Normalize Webhook Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail Trigger (optional)": {
+      "main": [
+        [
+          {
+            "node": "Map Email to Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Webhook Lead": {
+      "main": [
+        [
+          {
+            "node": "Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map Email to Lead": {
+      "main": [
+        [
+          {
+            "node": "Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lead": {
+      "main": [
+        [
+          {
+            "node": "AI Triage (core /triage)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Triage (core /triage)": {
+      "main": [
+        [
+          {
+            "node": "Combine Lead + Triage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combine Lead + Triage": {
+      "main": [
+        [
+          {
+            "node": "Came from webhook?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Route by Score",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Came from webhook?": {
+      "main": [
+        [
+          {
+            "node": "Respond with Triage",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Route by Score": {
+      "main": [
+        [
+          {
+            "node": "Log to CRM Sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Slack Hot Lead Alert",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Create Gmail Draft",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log to CRM Sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Create Gmail Draft",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log to CRM Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Discard (no action)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "065c7833-32d3-52e3-a5ba-bfa2ff401e8f",
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}

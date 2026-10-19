@@ -12,7 +12,7 @@ from .config import Settings
 from .guard import detect_injection
 from .pricing import estimate_cost
 from .rules_engine import rules_triage
-from .schemas import Enrichment, LeadIn, LLMTriage, TriageMeta, TriageResponse, Usage
+from .schemas import Enrichment, LeadEcho, LeadIn, LLMTriage, TriageMeta, TriageResponse, Usage
 from .scoring import ScoringRules
 from .tools import ToolBox, enrich_email_domain
 
@@ -73,6 +73,7 @@ class TriageService:
             enrichment=Enrichment(email_type=facts["email_type"], domain=facts["domain"], company_guess=company_guess),
             suggested_reply=triage.suggested_reply,
             routing=routing,
+            lead=LeadEcho(name=lead.name, email=lead.email, company=lead.company, source=lead.source),
             meta=meta,
         )
 

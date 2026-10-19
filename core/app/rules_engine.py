@@ -33,6 +33,8 @@ _CURRENCY_RE = re.compile(
 )
 _GIBBERISH_RE = re.compile(r"\b(?:asdf\w*|qwerty\w*|test(?:\s+test)+|lorem ipsum)\b", re.IGNORECASE)
 
+_BUDGET_TEXT = {"explicit": "an explicit budget", "mentioned": "budget mentioned", "none": "no budget stated"}
+
 _LABELS = {
     "sales_inquiry": "Sales inquiry",
     "support": "Support request",
@@ -169,7 +171,7 @@ def _summary(category: str, lead: LeadIn, matched: dict[str, list[str]], urgency
     who = lead.name + (f" ({lead.company})" if lead.company else "")
     topics = matched.get(category, [])[:3]
     about = f" mentioning {', '.join(topics)}" if topics else ""
-    budget_text = {"explicit": "an explicit budget", "mentioned": "budget mentioned", "none": "no budget stated"}[budget]
+    budget_text = _BUDGET_TEXT[budget]
     return f"{_LABELS[category]} from {who}{about}, with {urgency} urgency and {budget_text}."
 
 

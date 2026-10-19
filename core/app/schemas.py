@@ -117,7 +117,17 @@ class TriageMeta(BaseModel):
     fallback_reason: str | None = None
 
 
+class LeadEcho(BaseModel):
+    """Contact fields echoed back so no-code tools can map everything from one step."""
+
+    name: str
+    email: str
+    company: str | None = None
+    source: str
+
+
 class TriageResponse(TriageResult):
+    lead: LeadEcho
     meta: TriageMeta
 
 
