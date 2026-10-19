@@ -20,6 +20,7 @@ Mode = Literal["live", "mock", "fallback"]
 
 CATEGORIES: tuple[str, ...] = ("sales_inquiry", "support", "partnership", "job_seeker", "spam", "other")
 
+EM_DASH, EN_DASH = chr(0x2014), chr(0x2013)
 _EMAIL_RE = re.compile(
     r"^[^@\s]{1,64}@[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)+$"
 )
@@ -27,7 +28,7 @@ _EMAIL_RE = re.compile(
 
 def strip_dashes(text: str) -> str:
     """House style: no em or en dashes in anything a client or lead reads."""
-    return text.replace(" — ", ", ").replace("—", ", ").replace("–", "-")
+    return text.replace(f" {EM_DASH} ", ", ").replace(EM_DASH, ", ").replace(EN_DASH, "-")
 
 
 class LeadIn(BaseModel):

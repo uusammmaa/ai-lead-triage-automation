@@ -35,15 +35,15 @@ def test_llm_triage_strips_em_and_en_dashes():
     triage = LLMTriage(
         category="sales_inquiry",
         lead_score=80,
-        score_reasons=["Budget — explicit"],
+        score_reasons=["Budget \u2014 explicit"],
         urgency="high",
         budget_signal="explicit",
-        summary="Big lead — call today.",
+        summary="Big lead \u2014 call today.",
         company_guess=None,
-        suggested_reply="Hi Dana — thanks! Pages 2–3 attached.",
+        suggested_reply="Hi Dana \u2014 thanks! Pages 2\u20133 attached.",
     )
     for text in (triage.summary, triage.suggested_reply, *triage.score_reasons):
-        assert "—" not in text and "–" not in text
+        assert "\u2014" not in text and "\u2013" not in text
 
 
 @pytest.mark.parametrize("score", [-1, 101])
@@ -105,4 +105,4 @@ def test_suggested_replies_never_contain_em_dashes(client, headers, sample_leads
 
     for lead in sample_leads:
         body = client.post("/triage", json=lead_payload(lead), headers=headers).json()
-        assert "—" not in body["suggested_reply"] + body["summary"]
+        assert "\u2014" not in body["suggested_reply"] + body["summary"]

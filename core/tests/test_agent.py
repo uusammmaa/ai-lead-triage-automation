@@ -110,8 +110,8 @@ def test_code_overrides_model_on_email_facts(live_settings, headers):
 
 
 def test_em_dashes_from_model_are_removed(live_settings, headers):
-    body, _ = run(live_settings, headers, [final_json(suggested_reply="Hi Dana — great to hear from you.")])
-    assert "—" not in body["suggested_reply"]
+    body, _ = run(live_settings, headers, [final_json(suggested_reply="Hi Dana \u2014 great to hear from you.")])
+    assert "\u2014" not in body["suggested_reply"]
 
 
 def test_agent_stops_after_max_steps(rules):
