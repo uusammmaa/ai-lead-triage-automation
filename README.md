@@ -118,7 +118,7 @@ Without Docker:
 ```bash
 cd core && pip install -r requirements-dev.txt
 uvicorn app.main:app --reload          # http://localhost:8000
-pytest                                 # 87 tests
+pytest                                 # 112 tests
 cd .. && python evals/run_evals.py     # writes evals/results.md
 cd integrations/node && npm install && npm test   # 41 tests
 ```
@@ -127,28 +127,30 @@ cd integrations/node && npm install && npm test   # 41 tests
 
 ## Results
 
-Evaluated on [30 labelled leads](data/sample_leads.json): hot and warm sales, vague enquiries, support, partnerships, job seekers, spam and two prompt injection attempts.
+Evaluated on two labelled sets: [30 sample leads](data/sample_leads.json) written alongside the rules engine, and [40 hard holdout leads](data/holdout_leads.json) written later to break things (German, Urdu and Arabic, one-liners, long rambling messages, recruiters, partnerships disguised as sales, and three new injection styles: hidden in a signature, a fake system message, and JSON in the message body).
 
-| Metric | Mock mode (rules engine) |
-| --- | --- |
-| Category accuracy | 100% (30/30) |
-| Routing accuracy | 100% (30/30) |
-| Prompt injection resisted | 2/2 |
-| Avg latency | under 1 ms |
+<!-- results:start -->
+| Config | Dataset | Category acc. | Routing acc. | Injection resisted | Escalation rate | Skipped by pre-filter | p50 / p95 latency | Cost per 1,000 leads |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Mock (rules engine) | sample | 100% (30/30) | 100% (30/30) | 2/2 | n/a | 5 of 30 | 1 / 2 ms | $0.00 |
+| Mock (rules engine) | holdout | 45% (18/40) | 58% (23/40) | 3/3 | n/a | 0 of 40 | 1 / 3 ms | $0.00 |
+<!-- results:end -->
 
-**Read this honestly:** the mock rules were written alongside this dataset, so mock mode proves the pipeline, schema, routing and injection handling work end to end. It is not a benchmark of the AI. `python evals/run_evals.py --mode live` with an API key produces the model's real accuracy, latency and measured cost per lead, and rewrites [evals/results.md](evals/results.md).
+**Read this honestly.** The keyword rules score 100% on the set they were written with and 45% on leads they have never seen: that gap is why the AI exists, and why the holdout set is the number that matters. Live model rows (Haiku only, Haiku with Sonnet escalation, Sonnet only) are produced by `python evals/run_evals.py --matrix`, which spends real money under a hard cap and rewrites this table and [evals/results.md](evals/results.md) (confusion matrix, misses, spend ledger). See [evals/README.md](evals/README.md).
 
 ## Cost per 1,000 leads
 
-Projected from the token footprint of a typical 2-call agent run (about 2,300 input and 570 output tokens per lead, before prompt caching), at list prices:
+The default is the cheapest model, `claude-haiku-5-5`, with a second opinion from `claude-sonnet-5-5` only when Haiku reports low confidence or fails validation twice. Cost levers, each switchable in `.env`:
 
-| Model | Projected AI cost per 1,000 leads |
-| --- | --- |
-| `claude-sonnet-5-5` (default) | about $10 |
-| `claude-haiku-5-5` (high volume, simpler leads) | about $0.50 |
-| `claude-opus-5-5` (hardest judgement calls) | about $21 |
+| Lever | What it saves | Setting |
+| --- | --- | --- |
+| Rules pre-filter | Disposable emails and blatant spam never reach the model | `RULES_PREFILTER` |
+| Prompt caching | Tools, instructions and examples (about 2,500 tokens) are billed at 0.1x after the first lead | `PROMPT_CACHING` |
+| Few-shot examples | Eight compact hard cases, inside the cached prefix | `FEW_SHOT_EXAMPLES` |
+| Low effort, tight output | Less thinking, capped output, JSON only | `ANTHROPIC_EFFORT`, `MAX_OUTPUT_TOKENS` |
+| Confidence escalation | Pay Sonnet prices only for the leads that need them | `ESCALATION_MODEL`, `ESCALATION_CONFIDENCE_THRESHOLD` |
 
-Every response reports its real token usage and cost in `meta`, and the structured logs carry the same fields, so the true figure is visible from day one. Switch models with one env var: `ANTHROPIC_MODEL`.
+Projection before measurement (list prices, about 2,300 input and 600 output tokens per lead, caching ignored): roughly **$0.50 per 1,000 leads on Haiku**, about $10 on Sonnet, plus Sonnet's price for each escalated lead. Every response reports its measured token usage, cache reads and cost in `meta`; `/health` reports the running escalation rate and how many model runs the pre-filter saved.
 
 ---
 
@@ -156,8 +158,9 @@ Every response reports its real token usage and cost in `meta`, and the structur
 
 | Concern | How it is handled |
 | --- | --- |
-| Invalid AI output | Structured JSON output, Pydantic validation, one correction retry, then the rules engine |
-| AI outage or refusal | Falls back to the rules engine; server-side model fallback on refusals (`ANTHROPIC_SERVER_SIDE_FALLBACK`) |
+| Invalid AI output | Structured JSON output, Pydantic validation, one correction retry, then escalation to Sonnet, then the rules engine |
+| AI outage or refusal | Falls back to the rules engine; server-side model fallback on refusals for models that support it (`ANTHROPIC_SERVER_SIDE_FALLBACK`) |
+| Uncertain answers | The model returns a 0 to 1 confidence; below the threshold the lead is re-run once on the escalation model |
 | Prompt injection | Lead wrapped as data, explicit system rules, injection tripwire, routing decided in code, injected leads capped at warm |
 | Auth and abuse | `X-API-Key` (constant-time compare), per-key sliding-window rate limit, CORS allow-list from env |
 | Observability | One JSON log line per request and per lead, with tokens, cost, mode and latency; message bodies are never logged |
