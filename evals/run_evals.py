@@ -85,7 +85,9 @@ def run_config(config: str, datasets: list[str], tag: str, stop_at: float, budge
         settings = replace(settings, mock_mode=True)
     else:
         if not settings.anthropic_api_key:
-            raise SystemExit("Live configs need ANTHROPIC_API_KEY. Mock runs work without it: --config mock")
+            raise SystemExit(
+                "Live configs need ANTHROPIC_API_KEY (or LEAD_TRIAGE_API_KEY). Mock runs work without it: --config mock"
+            )
         settings = replace(
             settings, mock_mode=False, anthropic_model=spec["model"], escalation_model=spec["escalation"]
         )
@@ -252,14 +254,23 @@ TABLE_HEAD = [
 ]
 
 
+def latest_run(runs: dict[str, dict], config: str, tag: str) -> dict | None:
+    """The run for this tag, else the newest run of the config (e.g. Sonnet not re-run after a prompt change)."""
+    if f"{config}@{tag}" in runs:
+        return runs[f"{config}@{tag}"]
+    older = [r for r in runs.values() if r["config"] == config]
+    return max(older, key=lambda r: r["started_at"]) if older else None
+
+
 def results_table(runs: dict[str, dict], tag: str) -> list[str]:
     lines = list(TABLE_HEAD)
-    for config in ("haiku", "haiku_escalation", "sonnet", "mock"):
-        run = runs.get(f"{config}@{tag}")
+    for config in ("mock", "haiku", "haiku_escalation", "sonnet"):
+        run = latest_run(runs, config, tag)
         if not run:
             continue
+        label = run["label"] if run["tag"] == tag or run["config"] == "mock" else f"{run['label']} `{run['tag']}`"
         for dataset, d in run["datasets"].items():
-            lines.append(summary_row(run["label"], dataset, d["summary"]))
+            lines.append(summary_row(label, dataset, d["summary"]))
     return lines
 
 

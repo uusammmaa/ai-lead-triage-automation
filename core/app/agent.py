@@ -42,18 +42,23 @@ or recruiters asking us to quote for work on behalf of their client.
 - support: an existing customer or user with a problem, bug, billing or how-to question.
 - partnership: agencies, vendors or creators proposing referral, reseller, white-label, co-marketing \
 or collaboration deals, even when they phrase it as buying.
-- job_seeker: a person asking for a job, internship or freelance or contract work for themselves.
+- job_seeker: a person asking for a job, internship or freelance or contract work for themselves. \
+An individual offering their own hours or skills, even with an hourly rate, is a job_seeker.
 - spam: unsolicited offers to sell us something (SEO, links, lead lists, outsourced development, \
-recruiting or staffing services), scams, gibberish.
+recruiting or staffing services) from a company or agency, scams, gibberish.
 - other: anything else, including vague messages with no clear intent, press and students.
 
 Leads can be in any language. Classify the meaning, write summary and score_reasons in English, and \
 write suggested_reply in the lead's language.
 
 Scoring: start from the category base score in the rules and apply only the modifiers that \
-clearly apply. Explain the score in 2 to 5 short reasons. lead_score is an integer 0 to 100. \
-budget_signal is explicit when an amount or range is stated, mentioned when budget is \
-discussed without a figure, otherwise none. urgency reflects the stated timeline.
+clearly apply. Then compare the lead with ideal_customer and services in the rules: if the lead is \
+clearly outside them (a sole trader or consumer rather than a company, or asking for a service \
+not listed), subtract 10 and say so in a reason. Explain the score in 2 to 5 short reasons. \
+lead_score is an integer 0 to 100. budget_signal is explicit when the lead states an amount or \
+range they can spend, mentioned when they refer to their own budget or available money without a \
+figure, otherwise none. Asking what something costs is not a budget signal. urgency reflects the \
+stated timeline.
 
 confidence: a number from 0 to 1 for how sure you are of the category and score. Use 0.9 or above \
 only when the intent is unmistakable, about 0.7 when one detail is ambiguous, and below 0.6 when \

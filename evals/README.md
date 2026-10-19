@@ -21,7 +21,7 @@ Two labelled sets, four configurations, one hard spend cap.
 python evals/run_evals.py --config mock --data sample holdout
 
 # Live: the three model configs (Sonnet on the holdout only), then the report
-export ANTHROPIC_API_KEY=...
+export ANTHROPIC_API_KEY=...   # or LEAD_TRIAGE_API_KEY if your host strips ANTHROPIC_API_KEY
 python evals/run_evals.py --matrix
 ```
 
@@ -31,7 +31,7 @@ Outputs: `evals/results.md` (table, confusion matrix for the default config, mis
 
 Every live run appends its measured cost (from API-reported usage, cache reads and writes priced separately) to `evals/spend_ledger.json`. Before each lead the runner checks that the ledger total plus a worst-case reserve for that lead stays under `--stop-at` (default $1.80 against a $2.00 budget) and stops cleanly if not, marking the run partial. Delete the ledger only when starting a new budget.
 
-Expected spend for `--matrix`, from token estimates: about $0.05 for Haiku, $0.20 to $0.35 for Haiku with escalation, $0.50 to $0.70 for Sonnet on the holdout. About $1 in total, leaving room for one prompt revision.
+Expected spend for `--matrix`, from token estimates: about $0.05 for Haiku, $0.20 to $0.35 for Haiku with escalation, $0.50 to $0.70 for Sonnet on the holdout. Actual on 2026-10-19: $0.036 for Haiku, $0.066 for Haiku with escalation, $0.324 for Sonnet ($0.425 in total), plus $0.102 for the `v2` re-runs.
 
 ## One prompt revision, then stop
 

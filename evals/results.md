@@ -2,59 +2,73 @@
 
 Datasets: `data/sample_leads.json` (30 leads, written with the rules) and `data/holdout_leads.json` (40 hard leads written later: German, Urdu, Arabic, one-liners, long rambling messages, recruiters, partnerships disguised as sales, 3 new injection styles).
 
-> **Live runs have not been executed yet.** Only mock mode (the offline rules engine) is shown. Run `python evals/run_evals.py --matrix` with `ANTHROPIC_API_KEY` set to fill in the model rows.
-
-## Results (prompt `v1`)
+## Results (prompt `v2`)
 
 | Config | Dataset | Category acc. | Routing acc. | Injection resisted | Escalation rate | Skipped by pre-filter | p50 / p95 latency | Cost per 1,000 leads |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Mock (rules engine) | sample | 100% (30/30) | 100% (30/30) | 2/2 | n/a | 5 of 30 | 1 / 2 ms | $0.00 |
 | Mock (rules engine) | holdout | 45% (18/40) | 58% (23/40) | 3/3 | n/a | 0 of 40 | 1 / 3 ms | $0.00 |
+| Haiku only | sample | 100% (30/30) | 100% (30/30) | 2/2 | 0% (0/25) | 5 of 30 | 5029 / 6153 ms | $0.51 |
+| Haiku only | holdout | 98% (39/40) | 98% (39/40) | 3/3 | 0% (0/40) | 0 of 40 | 5364 / 7251 ms | $0.61 |
+| Haiku + Sonnet escalation | sample | 100% (30/30) | 100% (30/30) | 2/2 | 4% (1/25) | 5 of 30 | 4899 / 7486 ms | $1.04 |
+| Haiku + Sonnet escalation | holdout | 100% (40/40) | 100% (40/40) | 3/3 | 2% (1/40) | 0 of 40 | 5217 / 7584 ms | $0.78 |
+| Sonnet only `v1` | holdout | 98% (39/40) | 98% (39/40) | 3/3 | 0% (0/40) | 0 of 40 | 5008 / 7071 ms | $8.10 |
 
 Cost per 1,000 leads is measured from API-reported token usage (cache reads and writes priced separately) and includes leads the pre-filter skipped at $0. Latency is wall-clock per lead, sequential.
 
-## Confusion matrix: Mock (rules engine) (sample + holdout, 70 leads)
+## Before and after the prompt change (`v1` to `v2`)
+
+| Config | Dataset | Category acc. | Routing acc. | Injection resisted | Escalation rate | Skipped by pre-filter | p50 / p95 latency | Cost per 1,000 leads |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Haiku only `v1` | sample | 100% (30/30) | 93% (28/30) | 2/2 | 0% (0/25) | 5 of 30 | 4556 / 6687 ms | $0.46 |
+| Haiku only `v1` | holdout | 100% (40/40) | 100% (40/40) | 3/3 | 0% (0/40) | 0 of 40 | 4884 / 6516 ms | $0.55 |
+| Haiku only `v2` | sample | 100% (30/30) | 100% (30/30) | 2/2 | 0% (0/25) | 5 of 30 | 5029 / 6153 ms | $0.51 |
+| Haiku only `v2` | holdout | 98% (39/40) | 98% (39/40) | 3/3 | 0% (0/40) | 0 of 40 | 5364 / 7251 ms | $0.61 |
+| Haiku + Sonnet escalation `v1` | sample | 100% (30/30) | 93% (28/30) | 2/2 | 4% (1/25) | 5 of 30 | 4435 / 5950 ms | $0.97 |
+| Haiku + Sonnet escalation `v1` | holdout | 98% (39/40) | 98% (39/40) | 3/3 | 5% (2/40) | 0 of 40 | 5070 / 6866 ms | $0.91 |
+| Haiku + Sonnet escalation `v2` | sample | 100% (30/30) | 100% (30/30) | 2/2 | 4% (1/25) | 5 of 30 | 4899 / 7486 ms | $1.04 |
+| Haiku + Sonnet escalation `v2` | holdout | 100% (40/40) | 100% (40/40) | 3/3 | 2% (1/40) | 0 of 40 | 5217 / 7584 ms | $0.78 |
+
+## Confusion matrix: Haiku + Sonnet escalation (sample + holdout, 70 leads)
 
 | expected \ predicted | sales_inquiry | support | partnership | job_seeker | spam | other |
 | --- | --- | --- | --- | --- | --- | --- |
-| sales_inquiry | **20** | 3 | . | . | . | 5 |
-| support | . | **7** | . | . | . | 3 |
-| partnership | 2 | . | **4** | . | . | 1 |
-| job_seeker | 1 | . | . | **5** | . | 1 |
-| spam | . | 1 | 1 | 1 | **6** | 2 |
-| other | 1 | . | . | . | . | **6** |
+| sales_inquiry | **28** | . | . | . | . | . |
+| support | . | **10** | . | . | . | . |
+| partnership | . | . | **7** | . | . | . |
+| job_seeker | . | . | . | **7** | . | . |
+| spam | . | . | . | . | **11** | . |
+| other | . | . | . | . | . | **7** |
 
-## What Mock (rules engine) gets wrong (23 of 70)
+## What Haiku + Sonnet escalation gets wrong (0 of 70)
 
-| Lead | Tags | Expected | Got | Confidence | Model summary |
-| --- | --- | --- | --- | --- | --- |
-| H01 | german, hot_sales | sales_inquiry / hot | sales_inquiry / warm | None | Sales inquiry from Lena Brandt (Kranich Logistik GmbH) mentioning budget, with low urgency and budget mentioned. |
-| H02 | urdu, hot_sales | sales_inquiry / hot | other / cold | None | General enquiry from Imran Qureshi (Zarlink Textiles), with low urgency and no budget stated. |
-| H03 | long_rambling, hot_sales | sales_inquiry / hot | support / cold | None | Support request from Gareth Pryce (Oakmere Lettings) mentioning stopped, with low urgency and no budget stated. |
-| H04 | vague_budget, hot_sales | sales_inquiry / hot | support / cold | None | Support request from Priyanka Desai (Lumora Events) mentioning issue, with low urgency and no budget stated. |
-| H07 | arabic, warm_sales | sales_inquiry / warm | other / cold | None | General enquiry from Omar Haddad (Rimal Real Estate), with low urgency and no budget stated. |
-| H08 | vague_budget, warm_sales | sales_inquiry / warm | other / cold | None | General enquiry from Felix Hartmann (Vantor Insurance), with low urgency and budget mentioned. |
-| H09 | one_line, warm_sales | sales_inquiry / warm | other / cold | None | General enquiry from Ruth Adeyemi (Corvane Solar), with low urgency and no budget stated. |
-| H10 | partnership_disguised_as_sales | partnership / warm | other / cold | None | General enquiry from Tobias Lindqvist (AppBazaar), with medium urgency and no budget stated. |
-| H11 | partnership_disguised_as_sales | partnership / warm | sales_inquiry / warm | None | Sales inquiry from Chloe Barnard (Keystone AI Consulting) mentioning interested in, interested, a call, with low urgency and no budget state |
-| H12 | long_rambling, warm_sales | sales_inquiry / warm | support / cold | None | Support request from Maureen Kelly (Kelly's Bakehouse) mentioning help, with low urgency and no budget stated. |
-| H16 | press | other / cold | sales_inquiry / warm | None | Sales inquiry from Hannah Cole (The Business Desk) mentioning quote, with low urgency and no budget stated. |
-| H18 | arabic, support | support / cold | other / cold | None | General enquiry from Layla Mansour (Rimal Real Estate), with low urgency and no budget stated. |
-| H19 | urdu, roman_urdu, support | support / cold | other / cold | None | General enquiry from Bilal Ahmed (Zarlink Textiles), with low urgency and no budget stated. |
-| H20 | support, upsell_hint | support / cold | other / cold | None | General enquiry from Sara Lindgren (Pollen Skincare), with low urgency and no budget stated. |
-| H23 | german, job_seeker | job_seeker / cold | other / cold | None | General enquiry from Mia Schröder, with low urgency and no budget stated. |
-| H24 | job_seeker, freelancer, ambiguous | job_seeker / cold | sales_inquiry / hot | None | Sales inquiry from Ravi Shankar mentioning build, with high urgency and an explicit budget. |
-| H26 | vendor_pitch, spam | spam / discard | other / warm | None | General enquiry from Vikram Rao (CodeShore Teams), with low urgency and an explicit budget. |
-| H27 | recruiter, vendor_pitch, spam | spam / discard | job_seeker / cold | None | Job application from Ellie Shaw (TalentPeak Recruiting) mentioning join your team, with low urgency and no budget stated. |
-| H28 | personalised_spam, spam | spam / discard | support / cold | None | Support request from Jordan Blake (PipelinePro) mentioning help, with high urgency and no budget stated. |
-| H30 | one_line, gibberish, spam | spam / discard | other / cold | None | General enquiry from xx, with low urgency and no budget stated. |
-| H34 | partnership, ambiguous | partnership / cold | sales_inquiry / cold | None | Sales inquiry from Marcus Webb mentioning interested in, interested, with low urgency and no budget stated. |
-| H39 | spam, disguised_as_partnership | spam / discard | partnership / hot | None | Partnership proposal from Content Team (LuckySpin Media) mentioning partnership, with low urgency and an explicit budget. |
-| H40 | german, one_line, warm_sales | sales_inquiry / warm | other / cold | None | General enquiry from Stefan Huber (Alpenblick Hotels), with low urgency and no budget stated. |
+### What changed between `v1` and `v2`
+
+One prompt revision, based on the real `v1` Haiku misses, then stop. No few-shot examples were added or changed.
+
+| `v1` miss | What Haiku did | Prompt change in `v2` |
+| --- | --- | --- |
+| L10 (sample): six-gym operator asks "what does it cost?", expected warm | Counted the price question as `budget_signal: mentioned` (+10), scored 75, routed hot | `budget_signal` now means the lead refers to *their own* budget or money; "Asking what something costs is not a budget signal." |
+| L11 (sample): solo consultant, free email, $2k for a website chatbot, expected warm | Noted "chatbots are outside the listed services, so fit is uncertain" but had no rule to act on it, scored 80, routed hot | After the modifiers, compare with `ideal_customer` and `services`; a lead clearly outside them (sole trader or consumer, or a service not listed) loses 10 points with a stated reason |
+| H24 (holdout, escalation run only): an individual offering Make and Zapier work at $25/hour, expected job_seeker | Called it spam ("outsourced development") at confidence 0.7; the Haiku-only run got it right, so the two category definitions overlapped | `job_seeker` now says an individual offering their own hours is a job seeker, even with an hourly rate; `spam` sales offers are "from a company or agency" |
+
+H24 is a holdout lead, so the `v2` holdout numbers are slightly optimistic for that one lead. The change fixes a real contradiction in the category definitions rather than adding a rule for that lead.
+
+### Results
+
+- **Fixed:** L10 and L11 now route warm in both Haiku configs (sample routing 28/30 to 30/30). H24 is now job_seeker in the escalation run.
+- **New miss:** H39, a casino link-placement pitch that opens with "Partnership opportunity!", came back as partnership in the Haiku-only `v2` run, at confidence 0.55. In the escalation `v2` run Haiku got it right without escalating. The two `v2` Haiku runs differ on this lead, so this is run-to-run variance on a hard disguise case, not a stable regression. Below the 0.6 threshold, the escalation config would send it to Sonnet.
+- **Side effect:** the fit penalty also lowers some support, partnership and other scores by 10 (for example support leads 10 to 0). Routing does not change, because category overrides route those categories cold anyway.
+- **Escalation:** 1 lead per set escalated in `v2` (L14 and H14, both vague one-liners Haiku already labelled correctly). In every run so far, escalation has not changed a label. It costs about $0.30 to $0.50 more per 1,000 leads.
+- **Cost:** `v2` adds about 100 prompt tokens, so Haiku costs about 10% more per lead.
+
+Accuracy at this level is at the ceiling of a 70-lead set: one lead is 1.4 to 3.3 points, so the `v1` to `v2` differences on the holdout are within noise. The clear signal is the gap between the rules engine (45% holdout category accuracy) and every model config (98% to 100%).
+
+No misses.
 
 ## Spend
 
-Ledger total for live evals: **$0.0000** of a $2.00 budget (`evals/spend_ledger.json`, 0 run entries).
+Ledger total for live evals: **$0.5272** of a $2.00 budget (`evals/spend_ledger.json`, 9 run entries).
 
 ## Caveats
 

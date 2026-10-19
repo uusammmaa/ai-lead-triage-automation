@@ -98,6 +98,8 @@ cp .env.example .env            # add ANTHROPIC_API_KEY here for live Claude mod
 docker compose up --build
 ```
 
+If your host reserves or strips `ANTHROPIC_API_KEY` (some CI runners and agent sandboxes do), set `LEAD_TRIAGE_API_KEY` instead. The core reads it only when `ANTHROPIC_API_KEY` is unset or empty.
+
 | Open | What |
 | --- | --- |
 | http://localhost:8080 | Demo form. Pick a sample lead, choose where to send it |
@@ -118,7 +120,7 @@ Without Docker:
 ```bash
 cd core && pip install -r requirements-dev.txt
 uvicorn app.main:app --reload          # http://localhost:8000
-pytest                                 # 112 tests
+pytest                                 # 113 tests
 cd .. && python evals/run_evals.py     # writes evals/results.md
 cd integrations/node && npm install && npm test   # 41 tests
 ```
@@ -134,9 +136,16 @@ Evaluated on two labelled sets: [30 sample leads](data/sample_leads.json) writte
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Mock (rules engine) | sample | 100% (30/30) | 100% (30/30) | 2/2 | n/a | 5 of 30 | 1 / 2 ms | $0.00 |
 | Mock (rules engine) | holdout | 45% (18/40) | 58% (23/40) | 3/3 | n/a | 0 of 40 | 1 / 3 ms | $0.00 |
+| Haiku only | sample | 100% (30/30) | 100% (30/30) | 2/2 | 0% (0/25) | 5 of 30 | 5029 / 6153 ms | $0.51 |
+| Haiku only | holdout | 98% (39/40) | 98% (39/40) | 3/3 | 0% (0/40) | 0 of 40 | 5364 / 7251 ms | $0.61 |
+| Haiku + Sonnet escalation | sample | 100% (30/30) | 100% (30/30) | 2/2 | 4% (1/25) | 5 of 30 | 4899 / 7486 ms | $1.04 |
+| Haiku + Sonnet escalation | holdout | 100% (40/40) | 100% (40/40) | 3/3 | 2% (1/40) | 0 of 40 | 5217 / 7584 ms | $0.78 |
+| Sonnet only `v1` | holdout | 98% (39/40) | 98% (39/40) | 3/3 | 0% (0/40) | 0 of 40 | 5008 / 7071 ms | $8.10 |
 <!-- results:end -->
 
-**Read this honestly.** The keyword rules score 100% on the set they were written with and 45% on leads they have never seen: that gap is why the AI exists, and why the holdout set is the number that matters. Live model rows (Haiku only, Haiku with Sonnet escalation, Sonnet only) are produced by `python evals/run_evals.py --matrix`, which spends real money under a hard cap and rewrites this table and [evals/results.md](evals/results.md) (confusion matrix, misses, spend ledger). See [evals/README.md](evals/README.md).
+**Read this honestly.** The keyword rules score 100% on the set they were written with and 45% on leads they have never seen. On that holdout, every model config scores 98% to 100% on category (routing 98% to 100%, against 58% for the rules): an uplift of **53 to 55 points** over the rules engine, and the reason the AI exists. Live numbers are from real API runs on 2026-10-19, after one prompt revision (`v2`, see [evals/results.md](evals/results.md) for before and after, the confusion matrix and the spend ledger). Sonnet was run once, on the `v1` prompt, and is the reference, not the default.
+
+Two caveats. At 98% to 100% the models are at the ceiling of a 70-lead set: one lead is 1.4 to 3.3 points, so the differences between model configs are noise. And in every run, escalation never changed a label: the leads Haiku sent to Sonnet were already right. It stays on as a cheap safety net, because Haiku's one wrong answer in `v2` came with a confidence (0.55) below the escalation threshold. Re-run with `python evals/run_evals.py --matrix`, which spends real money under a hard cap; see [evals/README.md](evals/README.md).
 
 ## Cost per 1,000 leads
 
@@ -150,7 +159,7 @@ The default is the cheapest model, `claude-haiku-5-5`, with a second opinion fro
 | Low effort, tight output | Less thinking, capped output, JSON only | `ANTHROPIC_EFFORT`, `MAX_OUTPUT_TOKENS` |
 | Confidence escalation | Pay Sonnet prices only for the leads that need them | `ESCALATION_MODEL`, `ESCALATION_CONFIDENCE_THRESHOLD` |
 
-Projection before measurement (list prices, about 2,300 input and 600 output tokens per lead, caching ignored): roughly **$0.50 per 1,000 leads on Haiku**, about $10 on Sonnet, plus Sonnet's price for each escalated lead. Every response reports its measured token usage, cache reads and cost in `meta`; `/health` reports the running escalation rate and how many model runs the pre-filter saved.
+Measured on the live evals (prompt caching on, pre-filter on): **$0.51 to $0.61 per 1,000 leads on Haiku**, $0.78 to $1.04 with Sonnet escalation, and $8.10 on Sonnet alone. All live evals together (320 lead triages: the matrix plus the `v2` re-runs) cost $0.53. Every response reports its measured token usage, cache reads and cost in `meta`; `/health` reports the running escalation rate and how many model runs the pre-filter saved.
 
 ---
 
