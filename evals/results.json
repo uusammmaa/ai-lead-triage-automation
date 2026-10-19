@@ -1,13 +1,13 @@
 {
-  "run_at": "2026-10-19T09:59:27+00:00",
+  "run_at": "2026-10-19T10:24:34+00:00",
   "mode": "mock",
   "model": null,
   "leads": 30,
   "category_accuracy": 1.0,
   "routing_accuracy": 1.0,
   "injection_resisted": "2/2",
-  "avg_latency_ms": 0.3,
-  "p95_latency_ms": 1,
+  "avg_latency_ms": 1.2,
+  "p95_latency_ms": 2,
   "modes": {
     "mock": 30
   },

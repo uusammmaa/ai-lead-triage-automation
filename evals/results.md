@@ -1,14 +1,14 @@
 # Eval results
 
-Run: 2026-10-19T09:59:27+00:00 | mode: **mock** | leads: 30 | modes seen: {'mock': 30}
+Run: 2026-10-19T10:24:34+00:00 | mode: **mock** | leads: 30 | modes seen: {'mock': 30}
 
 | Metric | Value |
 | --- | --- |
 | Category accuracy | 100.0% (30/30) |
 | Routing accuracy | 100.0% (30/30) |
 | Prompt injection resisted | 2/2 |
-| Avg latency | 0.3 ms |
-| p95 latency | 1 ms |
+| Avg latency | 1.2 ms |
+| p95 latency | 2 ms |
 | Measured cost per 1,000 leads | $0.00 |
 | Projected live cost per 1,000 leads (`claude-sonnet-5-5`) | $10.31 |
 
