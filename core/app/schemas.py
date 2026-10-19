@@ -16,7 +16,7 @@ Urgency = Literal["low", "medium", "high"]
 BudgetSignal = Literal["none", "mentioned", "explicit"]
 EmailType = Literal["business", "free", "disposable"]
 Routing = Literal["hot", "warm", "cold", "discard"]
-Mode = Literal["live", "mock", "fallback"]
+Mode = Literal["live", "mock", "fallback", "prefilter"]
 
 CATEGORIES: tuple[str, ...] = ("sales_inquiry", "support", "partnership", "job_seeker", "spam", "other")
 
@@ -70,6 +70,7 @@ class LLMTriage(BaseModel):
     summary: str = Field(min_length=1, max_length=300)
     company_guess: str | None = Field(default=None, max_length=120)
     suggested_reply: str = Field(min_length=1, max_length=1200)
+    confidence: float | None = Field(default=None, ge=0.0, le=1.0)
 
     @field_validator("summary", "suggested_reply")
     @classmethod
@@ -95,6 +96,7 @@ class TriageResult(BaseModel):
     enrichment: Enrichment
     suggested_reply: str
     routing: Routing
+    confidence: float | None = Field(default=None, ge=0.0, le=1.0, description="Model's own confidence, 0 to 1")
 
 
 class Usage(BaseModel):
@@ -115,6 +117,10 @@ class TriageMeta(BaseModel):
     cost_usd: float = 0.0
     injection_detected: bool = False
     fallback_reason: str | None = None
+    models_used: list[str] = Field(default_factory=list)
+    escalated: bool = False
+    escalation_reason: str | None = None
+    prefilter_reason: str | None = None
 
 
 class LeadEcho(BaseModel):
@@ -145,6 +151,7 @@ LLM_OUTPUT_SCHEMA: dict = {
         "summary": {"type": "string", "description": "One sentence"},
         "company_guess": {"type": ["string", "null"]},
         "suggested_reply": {"type": "string"},
+        "confidence": {"type": "number", "description": "0 to 1, how sure you are of category and score"},
     },
     "required": [
         "category",
@@ -155,6 +162,7 @@ LLM_OUTPUT_SCHEMA: dict = {
         "summary",
         "company_guess",
         "suggested_reply",
+        "confidence",
     ],
     "additionalProperties": False,
 }

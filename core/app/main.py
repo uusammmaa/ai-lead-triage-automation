@@ -86,6 +86,8 @@ def create_app(settings: Settings | None = None, client: Any | None = None) -> F
             "model": None if settings.mock_mode else settings.anthropic_model,
             "auth": "api_key" if settings.auth_enabled else "disabled",
             "homepage_fetch": settings.enable_homepage_fetch,
+            "escalation_model": None if settings.mock_mode else settings.escalation_model,
+            "stats": app.state.service.stats.snapshot(),
         }
 
     @app.post("/triage", response_model=TriageResponse, tags=["triage"])
@@ -109,6 +111,10 @@ def create_app(settings: Settings | None = None, client: Any | None = None) -> F
                 "cost_usd": result.meta.cost_usd,
                 "injection_detected": result.meta.injection_detected,
                 "fallback_reason": result.meta.fallback_reason,
+                "confidence": result.confidence,
+                "escalated": result.meta.escalated,
+                "models_used": result.meta.models_used,
+                "prefilter_reason": result.meta.prefilter_reason,
             },
         )
         return result

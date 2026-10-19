@@ -11,7 +11,8 @@ from dataclasses import dataclass, field
 from functools import lru_cache
 from pathlib import Path
 
-DEFAULT_MODEL = "claude-sonnet-5-5"
+DEFAULT_MODEL = "claude-haiku-5-5"
+DEFAULT_ESCALATION_MODEL = "claude-sonnet-5-5"
 DEFAULT_RULES_PATH = Path(__file__).resolve().parent.parent / "config" / "scoring_rules.yaml"
 
 
@@ -41,6 +42,15 @@ class Settings:
     effort: str = "low"
     max_agent_steps: int = 6
     log_level: str = "INFO"
+    # Escalation: re-run a lead once on a stronger model when the cheap one is unsure or fails.
+    escalation_model: str | None = DEFAULT_ESCALATION_MODEL
+    escalation_threshold: float = 0.6
+    # Cost and quality levers.
+    prompt_caching: bool = True
+    few_shot: bool = True
+    prefilter: bool = True
+    max_output_tokens: int = 1500
+    temperature: float | None = None
 
     @property
     def auth_enabled(self) -> bool:
@@ -70,6 +80,13 @@ def load_settings() -> Settings:
         effort=os.getenv("ANTHROPIC_EFFORT", "low").strip() or "low",
         max_agent_steps=int(os.getenv("MAX_AGENT_STEPS", "6")),
         log_level=os.getenv("LOG_LEVEL", "INFO").upper(),
+        escalation_model=(os.getenv("ESCALATION_MODEL", DEFAULT_ESCALATION_MODEL).strip() or None),
+        escalation_threshold=float(os.getenv("ESCALATION_CONFIDENCE_THRESHOLD", "0.6")),
+        prompt_caching=_bool("PROMPT_CACHING", True),
+        few_shot=_bool("FEW_SHOT_EXAMPLES", True),
+        prefilter=_bool("RULES_PREFILTER", True),
+        max_output_tokens=int(os.getenv("MAX_OUTPUT_TOKENS", "1500")),
+        temperature=float(os.environ["TEMPERATURE"]) if os.getenv("TEMPERATURE", "").strip() else None,
     )
 
 

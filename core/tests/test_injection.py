@@ -1,3 +1,5 @@
+from dataclasses import replace
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -68,8 +70,10 @@ def test_manipulated_model_output_cannot_route_injected_lead_hot(live_settings, 
 def test_lead_text_is_sent_as_user_data_not_system_prompt(live_settings, headers, sample_leads):
     lead = next(x for x in sample_leads if x["id"] == "L29")
     fake = FakeAnthropic([tool_round(lead["email"]), final_json(category="spam", lead_score=0)])
-    TestClient(create_app(live_settings, client=fake)).post("/triage", json=lead_payload(lead), headers=headers)
+    app = create_app(replace(live_settings, prefilter=False), client=fake)  # force the model path
+    TestClient(app).post("/triage", json=lead_payload(lead), headers=headers)
     first = fake.calls[0]
-    assert "Ignore all previous instructions" not in first["system"]
+    system_text = " ".join(block["text"] for block in first["system"])
+    assert "Ignore all previous instructions" not in system_text
     user_msg = first["messages"][0]["content"]
     assert "<lead_data>" in user_msg and "Ignore all previous instructions" in user_msg

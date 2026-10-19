@@ -52,6 +52,15 @@ scoring:
     crm_or_tool_mentioned: 5
     volume_mentioned: 5
 
+# Pre-filter: discard obvious junk before any model call (saves cost and latency).
+# Conservative by design: a wrong discard loses a lead, a miss costs one cheap call.
+prefilter:
+  discard_disposable_email: true
+  # Spam keyword score needed (spam terms have weight 3, so 6 = two distinct spam phrases)...
+  spam_min_score: 6
+  # ...and it must be at least this many times the strongest non-spam keyword score.
+  spam_dominance: 2.0
+
 # Keyword lists used by the offline rules engine. Claude is told to use its
 # own judgement and treat these as hints, not as hard rules.
 keywords:
