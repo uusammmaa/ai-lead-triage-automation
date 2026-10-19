@@ -169,7 +169,8 @@ def _summary(category: str, lead: LeadIn, matched: dict[str, list[str]], urgency
     who = lead.name + (f" ({lead.company})" if lead.company else "")
     topics = matched.get(category, [])[:3]
     about = f" mentioning {', '.join(topics)}" if topics else ""
-    return f"{_LABELS[category]} from {who}{about}, {urgency} urgency, budget {budget}."
+    budget_text = {"explicit": "an explicit budget", "mentioned": "budget mentioned", "none": "no budget stated"}[budget]
+    return f"{_LABELS[category]} from {who}{about}, with {urgency} urgency and {budget_text}."
 
 
 def rules_triage(lead: LeadIn, rules: ScoringRules) -> tuple[LLMTriage, dict[str, Any]]:
