@@ -1,0 +1,2508 @@
+{
+  "run_id": "mock@v1",
+  "config": "mock",
+  "label": "Mock (rules engine)",
+  "tag": "v1",
+  "model": null,
+  "escalation_model": null,
+  "levers": {
+    "prompt_caching": true,
+    "few_shot": true,
+    "prefilter": true,
+    "effort": "low",
+    "max_output_tokens": 1500,
+    "escalation_threshold": 0.6
+  },
+  "started_at": "2026-10-19T11:02:52+00:00",
+  "datasets": {
+    "sample": {
+      "rows": [
+        {
+          "id": "L01",
+          "tags": [
+            "hot_sales"
+          ],
+          "expected_category": "sales_inquiry",
+          "expected_routing": "hot",
+          "category": "sales_inquiry",
+          "routing": "hot",
+          "lead_score": 95,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 10,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Sales inquiry from Dana Whitfield (Brightpath Logistics) mentioning quote, proposal, budget, with high urgency and an explicit budget.",
+          "score_reasons": [
+            "Sales inquiry (base 40)",
+            "Business email domain (+10)",
+            "Company name provided (+5)",
+            "Budget explicit (+25)",
+            "High urgency timeline (+15)"
+          ]
+        },
+        {
+          "id": "L02",
+          "tags": [
+            "hot_sales"
+          ],
+          "expected_category": "sales_inquiry",
+          "expected_routing": "hot",
+          "category": "sales_inquiry",
+          "routing": "hot",
+          "lead_score": 100,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 2,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Sales inquiry from Priya Raman (Lumen Health Clinics) mentioning quote, budget, we need, with high urgency and an explicit budget.",
+          "score_reasons": [
+            "Sales inquiry (base 40)",
+            "Business email domain (+10)",
+            "Company name provided (+5)",
+            "Budget explicit (+25)",
+            "High urgency timeline (+15)",
+            "Mentions CRM or tooling (+5)"
+          ]
+        },
+        {
+          "id": "L03",
+          "tags": [
+            "hot_sales"
+          ],
+          "expected_category": "sales_inquiry",
+          "expected_routing": "hot",
+          "category": "sales_inquiry",
+          "routing": "hot",
+          "lead_score": 100,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 2,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Sales inquiry from Marcus Lee (Orbit Retail Group) mentioning pricing, budget, looking for, with high urgency and an explicit budget.",
+          "score_reasons": [
+            "Sales inquiry (base 40)",
+            "Business email domain (+10)",
+            "Company name provided (+5)",
+            "Budget explicit (+25)",
+            "High urgency timeline (+15)",
+            "Mentions inbound volume (+5)"
+          ]
+        },
+        {
+          "id": "L04",
+          "tags": [
+            "hot_sales"
+          ],
+          "expected_category": "sales_inquiry",
+          "expected_routing": "hot",
+          "category": "sales_inquiry",
+          "routing": "hot",
+          "lead_score": 100,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 2,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Sales inquiry from Sofia Martins (Kestrel Software) mentioning we want, a call, with high urgency and an explicit budget.",
+          "score_reasons": [
+            "Sales inquiry (base 40)",
+            "Business email domain (+10)",
+            "Company name provided (+5)",
+            "Budget explicit (+25)",
+            "High urgency timeline (+15)",
+            "Mentions CRM or tooling (+5)"
+          ]
+        },
+        {
+          "id": "L05",
+          "tags": [
+            "hot_sales"
+          ],
+          "expected_category": "sales_inquiry",
+          "expected_routing": "hot",
+          "category": "sales_inquiry",
+          "routing": "hot",
+          "lead_score": 95,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 2,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Sales inquiry from Tom Becker (Ridgeline Insurance) mentioning proposal, budget, we need, with high urgency and an explicit budget.",
+          "score_reasons": [
+            "Sales inquiry (base 40)",
+            "Business email domain (+10)",
+            "Company name provided (+5)",
+            "Budget explicit (+25)",
+            "High urgency timeline (+15)"
+          ]
+        },
+        {
+          "id": "L06",
+          "tags": [
+            "hot_sales"
+          ],
+          "expected_category": "sales_inquiry",
+          "expected_routing": "hot",
+          "category": "sales_inquiry",
+          "routing": "hot",
+          "lead_score": 95,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 2,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Sales inquiry from Aisha Khan (Harbor Legal LLP) mentioning book a call, a call, with high urgency and an explicit budget.",
+          "score_reasons": [
+            "Sales inquiry (base 40)",
+            "Business email domain (+10)",
+            "Company name provided (+5)",
+            "Budget explicit (+25)",
+            "High urgency timeline (+15)"
+          ]
+        },
+        {
+          "id": "L07",
+          "tags": [
+            "warm_sales"
+          ],
+          "expected_category": "sales_inquiry",
+          "expected_routing": "warm",
+          "category": "sales_inquiry",
+          "routing": "warm",
+          "lead_score": 70,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 2,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Sales inquiry from Ben Carter (Fieldnote Studio) mentioning budget, automating, with low urgency and budget mentioned.",
+          "score_reasons": [
+            "Sales inquiry (base 40)",
+            "Business email domain (+10)",
+            "Company name provided (+5)",
+            "Budget mentioned (+10)",
+            "Mentions CRM or tooling (+5)"
+          ]
+        },
+        {
+          "id": "L08",
+          "tags": [
+            "warm_sales",
+            "free_email"
+          ],
+          "expected_category": "sales_inquiry",
+          "expected_routing": "warm",
+          "category": "sales_inquiry",
+          "routing": "warm",
+          "lead_score": 60,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 2,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Sales inquiry from Grace Okafor (Okafor Interiors) mentioning budget, would love something, with medium urgency and budget mentioned.",
+          "score_reasons": [
+            "Sales inquiry (base 40)",
+            "Company name provided (+5)",
+            "Budget mentioned (+10)",
+            "Medium urgency timeline (+5)"
+          ]
+        },
+        {
+          "id": "L09",
+          "tags": [
+            "warm_sales"
+          ],
+          "expected_category": "sales_inquiry",
+          "expected_routing": "warm",
+          "category": "sales_inquiry",
+          "routing": "warm",
+          "lead_score": 55,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Sales inquiry from Daniel Novak (Cobalt Manufacturing) mentioning interested, case study, some info, with low urgency and no budget stated.",
+          "score_reasons": [
+            "Sales inquiry (base 40)",
+            "Business email domain (+10)",
+            "Company name provided (+5)"
+          ]
+        },
+        {
+          "id": "L10",
+          "tags": [
+            "warm_sales"
+          ],
+          "expected_category": "sales_inquiry",
+          "expected_routing": "warm",
+          "category": "sales_inquiry",
+          "routing": "warm",
+          "lead_score": 65,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Sales inquiry from Hannah Schmidt (PeakFit Studios) mentioning cost, interested in, interested, with medium urgency and no budget stated.",
+          "score_reasons": [
+            "Sales inquiry (base 40)",
+            "Business email domain (+10)",
+            "Company name provided (+5)",
+            "Medium urgency timeline (+5)",
+            "Mentions inbound volume (+5)"
+          ]
+        },
+        {
+          "id": "L11",
+          "tags": [
+            "warm_sales",
+            "free_email"
+          ],
+          "expected_category": "sales_inquiry",
+          "expected_routing": "warm",
+          "category": "sales_inquiry",
+          "routing": "warm",
+          "lead_score": 70,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Sales inquiry from Leo Fischer mentioning build, with medium urgency and an explicit budget.",
+          "score_reasons": [
+            "Sales inquiry (base 40)",
+            "Budget explicit (+25)",
+            "Medium urgency timeline (+5)"
+          ]
+        },
+        {
+          "id": "L12",
+          "tags": [
+            "vague"
+          ],
+          "expected_category": "sales_inquiry",
+          "expected_routing": "cold",
+          "category": "sales_inquiry",
+          "routing": "cold",
+          "lead_score": 40,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 0,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Sales inquiry from Chris mentioning how much, interested, with low urgency and no budget stated.",
+          "score_reasons": [
+            "Sales inquiry (base 40)"
+          ]
+        },
+        {
+          "id": "L13",
+          "tags": [
+            "vague"
+          ],
+          "expected_category": "other",
+          "expected_routing": "cold",
+          "category": "other",
+          "routing": "cold",
+          "lead_score": 10,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 0,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "General enquiry from Jamie Ellis mentioning student, researching, class project, with low urgency and no budget stated.",
+          "score_reasons": [
+            "General enquiry (base 10)"
+          ]
+        },
+        {
+          "id": "L14",
+          "tags": [
+            "vague"
+          ],
+          "expected_category": "other",
+          "expected_routing": "cold",
+          "category": "other",
+          "routing": "cold",
+          "lead_score": 25,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 0,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "General enquiry from Morgan Price (Quietbrook), with low urgency and no budget stated.",
+          "score_reasons": [
+            "General enquiry (base 10)",
+            "Business email domain (+10)",
+            "Company name provided (+5)"
+          ]
+        },
+        {
+          "id": "L15",
+          "tags": [
+            "support"
+          ],
+          "expected_category": "support",
+          "expected_routing": "cold",
+          "category": "support",
+          "routing": "cold",
+          "lead_score": 45,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Support request from Rachel Adams (Brightpath Logistics) mentioning stopped, aren't firing, look into, with high urgency and no budget stated.",
+          "score_reasons": [
+            "Support request (base 10)",
+            "Business email domain (+10)",
+            "Company name provided (+5)",
+            "High urgency timeline (+15)",
+            "Mentions CRM or tooling (+5)"
+          ]
+        },
+        {
+          "id": "L16",
+          "tags": [
+            "support"
+          ],
+          "expected_category": "support",
+          "expected_routing": "cold",
+          "category": "support",
+          "routing": "cold",
+          "lead_score": 30,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Support request from Kevin Morales (Lumen Health Clinics) mentioning can't find, how do i, with low urgency and no budget stated.",
+          "score_reasons": [
+            "Support request (base 10)",
+            "Business email domain (+10)",
+            "Company name provided (+5)",
+            "Mentions CRM or tooling (+5)"
+          ]
+        },
+        {
+          "id": "L17",
+          "tags": [
+            "support"
+          ],
+          "expected_category": "support",
+          "expected_routing": "cold",
+          "category": "support",
+          "routing": "cold",
+          "lead_score": 25,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Support request from Nina Petrova (Kestrel Software) mentioning error, fails, help, with low urgency and no budget stated.",
+          "score_reasons": [
+            "Support request (base 10)",
+            "Business email domain (+10)",
+            "Company name provided (+5)"
+          ]
+        },
+        {
+          "id": "L18",
+          "tags": [
+            "support",
+            "free_email"
+          ],
+          "expected_category": "support",
+          "expected_routing": "cold",
+          "category": "support",
+          "routing": "cold",
+          "lead_score": 15,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 0,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Support request from Oliver Grant mentioning refund, charged, invoice, with medium urgency and no budget stated.",
+          "score_reasons": [
+            "Support request (base 10)",
+            "Medium urgency timeline (+5)"
+          ]
+        },
+        {
+          "id": "L19",
+          "tags": [
+            "partnership"
+          ],
+          "expected_category": "partnership",
+          "expected_routing": "warm",
+          "category": "partnership",
+          "routing": "warm",
+          "lead_score": 60,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Partnership proposal from Elena Rossi (Northstar Digital) mentioning partnership, partner agency, white-label, with low urgency and no budget stated.",
+          "score_reasons": [
+            "Partnership proposal (base 35)",
+            "Business email domain (+10)",
+            "Company name provided (+5)",
+            "Mentions CRM or tooling (+5)",
+            "Mentions inbound volume (+5)"
+          ]
+        },
+        {
+          "id": "L20",
+          "tags": [
+            "partnership"
+          ],
+          "expected_category": "partnership",
+          "expected_routing": "warm",
+          "category": "partnership",
+          "routing": "warm",
+          "lead_score": 60,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Partnership proposal from Raj Patel (Stackbridge) mentioning partnership, co-marketing, with medium urgency and no budget stated.",
+          "score_reasons": [
+            "Partnership proposal (base 35)",
+            "Business email domain (+10)",
+            "Company name provided (+5)",
+            "Medium urgency timeline (+5)",
+            "Mentions CRM or tooling (+5)"
+          ]
+        },
+        {
+          "id": "L21",
+          "tags": [
+            "partnership",
+            "free_email"
+          ],
+          "expected_category": "partnership",
+          "expected_routing": "cold",
+          "category": "partnership",
+          "routing": "cold",
+          "lead_score": 35,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Partnership proposal from Lucy Bennett mentioning collaborate, with low urgency and no budget stated.",
+          "score_reasons": [
+            "Partnership proposal (base 35)"
+          ]
+        },
+        {
+          "id": "L22",
+          "tags": [
+            "job_seeker"
+          ],
+          "expected_category": "job_seeker",
+          "expected_routing": "cold",
+          "category": "job_seeker",
+          "routing": "cold",
+          "lead_score": 5,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Job application from Ahmed Hassan mentioning job, internship, hiring, with low urgency and no budget stated.",
+          "score_reasons": [
+            "Job application (base 5)"
+          ]
+        },
+        {
+          "id": "L23",
+          "tags": [
+            "job_seeker"
+          ],
+          "expected_category": "job_seeker",
+          "expected_routing": "cold",
+          "category": "job_seeker",
+          "routing": "cold",
+          "lead_score": 5,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Job application from Emily Clarke mentioning open positions, join your team, with low urgency and no budget stated.",
+          "score_reasons": [
+            "Job application (base 5)"
+          ]
+        },
+        {
+          "id": "L24",
+          "tags": [
+            "job_seeker"
+          ],
+          "expected_category": "job_seeker",
+          "expected_routing": "cold",
+          "category": "job_seeker",
+          "routing": "cold",
+          "lead_score": 5,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Job application from Victor Huang mentioning freelancers, contract work, my rate, with low urgency and no budget stated.",
+          "score_reasons": [
+            "Job application (base 5)"
+          ]
+        },
+        {
+          "id": "L25",
+          "tags": [
+            "spam",
+            "disposable_email"
+          ],
+          "expected_category": "spam",
+          "expected_routing": "discard",
+          "category": "spam",
+          "routing": "discard",
+          "lead_score": 0,
+          "confidence": null,
+          "mode": "prefilter",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": "disposable_email",
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 0,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Likely spam from SEO Expert mentioning guaranteed, first page of google, money back, with low urgency and no budget stated.",
+          "score_reasons": [
+            "Likely spam (base 0)",
+            "Spam signals detected"
+          ]
+        },
+        {
+          "id": "L26",
+          "tags": [
+            "spam"
+          ],
+          "expected_category": "spam",
+          "expected_routing": "discard",
+          "category": "spam",
+          "routing": "discard",
+          "lead_score": 0,
+          "confidence": null,
+          "mode": "prefilter",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": "spam_keywords",
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Likely spam from Crypto Wealth Team (QuickCoin) mentioning crypto, click here, limited time, with low urgency and no budget stated.",
+          "score_reasons": [
+            "Likely spam (base 0)",
+            "Spam signals detected"
+          ]
+        },
+        {
+          "id": "L27",
+          "tags": [
+            "spam"
+          ],
+          "expected_category": "spam",
+          "expected_routing": "discard",
+          "category": "spam",
+          "routing": "discard",
+          "lead_score": 0,
+          "confidence": null,
+          "mode": "prefilter",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": "spam_keywords",
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Likely spam from Lead List Sales (BulkLeads) mentioning buy now, discount, email lists, with low urgency and no budget stated.",
+          "score_reasons": [
+            "Likely spam (base 0)",
+            "Spam signals detected"
+          ]
+        },
+        {
+          "id": "L28",
+          "tags": [
+            "spam",
+            "disposable_email"
+          ],
+          "expected_category": "spam",
+          "expected_routing": "discard",
+          "category": "spam",
+          "routing": "discard",
+          "lead_score": 0,
+          "confidence": null,
+          "mode": "prefilter",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": "disposable_email",
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 0,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Likely spam from asdf, with low urgency and no budget stated.",
+          "score_reasons": [
+            "Likely spam (base 0)",
+            "Spam signals detected"
+          ]
+        },
+        {
+          "id": "L29",
+          "tags": [
+            "prompt_injection",
+            "spam"
+          ],
+          "expected_category": "spam",
+          "expected_routing": "discard",
+          "category": "spam",
+          "routing": "discard",
+          "lead_score": 0,
+          "confidence": null,
+          "mode": "prefilter",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": "disposable_email",
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 0,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Likely spam from Free Traffic mentioning guaranteed, limited time, backlinks, with low urgency and no budget stated.",
+          "score_reasons": [
+            "Likely spam (base 0)",
+            "Spam signals detected",
+            "Contains instructions aimed at the AI"
+          ]
+        },
+        {
+          "id": "L30",
+          "tags": [
+            "prompt_injection",
+            "support"
+          ],
+          "expected_category": "support",
+          "expected_routing": "cold",
+          "category": "support",
+          "routing": "cold",
+          "lead_score": 10,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Support request from Paul Wright mentioning stopped, help, reconnect, with low urgency and no budget stated.",
+          "score_reasons": [
+            "Support request (base 10)",
+            "Contains instructions aimed at the AI"
+          ]
+        }
+      ],
+      "summary": {
+        "leads": 30,
+        "complete": true,
+        "category_correct": 30,
+        "routing_correct": 30,
+        "injection_resisted": 2,
+        "injection_total": 2,
+        "prefiltered": 5,
+        "model_leads": 0,
+        "escalated": 0,
+        "fallbacks": 0,
+        "p50_ms": 1,
+        "p95_ms": 2,
+        "p50_model_ms": 0,
+        "cost_usd": 0.0,
+        "cost_per_1000_usd": 0.0,
+        "usage": {
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0
+        }
+      }
+    },
+    "holdout": {
+      "rows": [
+        {
+          "id": "H01",
+          "tags": [
+            "german",
+            "hot_sales"
+          ],
+          "expected_category": "sales_inquiry",
+          "expected_routing": "hot",
+          "category": "sales_inquiry",
+          "routing": "warm",
+          "lead_score": 65,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 3,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Sales inquiry from Lena Brandt (Kranich Logistik GmbH) mentioning budget, with low urgency and budget mentioned.",
+          "score_reasons": [
+            "Sales inquiry (base 40)",
+            "Business email domain (+10)",
+            "Company name provided (+5)",
+            "Budget mentioned (+10)"
+          ]
+        },
+        {
+          "id": "H02",
+          "tags": [
+            "urdu",
+            "hot_sales"
+          ],
+          "expected_category": "sales_inquiry",
+          "expected_routing": "hot",
+          "category": "other",
+          "routing": "cold",
+          "lead_score": 25,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 2,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "General enquiry from Imran Qureshi (Zarlink Textiles), with low urgency and no budget stated.",
+          "score_reasons": [
+            "General enquiry (base 10)",
+            "Business email domain (+10)",
+            "Company name provided (+5)"
+          ]
+        },
+        {
+          "id": "H03",
+          "tags": [
+            "long_rambling",
+            "hot_sales"
+          ],
+          "expected_category": "sales_inquiry",
+          "expected_routing": "hot",
+          "category": "support",
+          "routing": "cold",
+          "lead_score": 30,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 5,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Support request from Gareth Pryce (Oakmere Lettings) mentioning stopped, with low urgency and no budget stated.",
+          "score_reasons": [
+            "Support request (base 10)",
+            "Business email domain (+10)",
+            "Company name provided (+5)",
+            "Mentions CRM or tooling (+5)"
+          ]
+        },
+        {
+          "id": "H04",
+          "tags": [
+            "vague_budget",
+            "hot_sales"
+          ],
+          "expected_category": "sales_inquiry",
+          "expected_routing": "hot",
+          "category": "support",
+          "routing": "cold",
+          "lead_score": 25,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Support request from Priyanka Desai (Lumora Events) mentioning issue, with low urgency and no budget stated.",
+          "score_reasons": [
+            "Support request (base 10)",
+            "Business email domain (+10)",
+            "Company name provided (+5)"
+          ]
+        },
+        {
+          "id": "H05",
+          "tags": [
+            "one_line",
+            "hot_sales"
+          ],
+          "expected_category": "sales_inquiry",
+          "expected_routing": "hot",
+          "category": "sales_inquiry",
+          "routing": "hot",
+          "lead_score": 85,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Sales inquiry from Dr. Alan Whitcombe (Whitcombe Physio) mentioning budget, with low urgency and an explicit budget.",
+          "score_reasons": [
+            "Sales inquiry (base 40)",
+            "Business email domain (+10)",
+            "Company name provided (+5)",
+            "Budget explicit (+25)",
+            "Mentions inbound volume (+5)"
+          ]
+        },
+        {
+          "id": "H06",
+          "tags": [
+            "free_email",
+            "hot_sales",
+            "borderline"
+          ],
+          "expected_category": "sales_inquiry",
+          "expected_routing": "hot",
+          "category": "sales_inquiry",
+          "routing": "hot",
+          "lead_score": 75,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Sales inquiry from Jess Moreno (Northfield Creative) mentioning automate, with medium urgency and an explicit budget.",
+          "score_reasons": [
+            "Sales inquiry (base 40)",
+            "Company name provided (+5)",
+            "Budget explicit (+25)",
+            "Medium urgency timeline (+5)"
+          ]
+        },
+        {
+          "id": "H07",
+          "tags": [
+            "arabic",
+            "warm_sales"
+          ],
+          "expected_category": "sales_inquiry",
+          "expected_routing": "warm",
+          "category": "other",
+          "routing": "cold",
+          "lead_score": 25,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "General enquiry from Omar Haddad (Rimal Real Estate), with low urgency and no budget stated.",
+          "score_reasons": [
+            "General enquiry (base 10)",
+            "Business email domain (+10)",
+            "Company name provided (+5)"
+          ]
+        },
+        {
+          "id": "H08",
+          "tags": [
+            "vague_budget",
+            "warm_sales"
+          ],
+          "expected_category": "sales_inquiry",
+          "expected_routing": "warm",
+          "category": "other",
+          "routing": "cold",
+          "lead_score": 35,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "General enquiry from Felix Hartmann (Vantor Insurance), with low urgency and budget mentioned.",
+          "score_reasons": [
+            "General enquiry (base 10)",
+            "Business email domain (+10)",
+            "Company name provided (+5)",
+            "Budget mentioned (+10)"
+          ]
+        },
+        {
+          "id": "H09",
+          "tags": [
+            "one_line",
+            "warm_sales"
+          ],
+          "expected_category": "sales_inquiry",
+          "expected_routing": "warm",
+          "category": "other",
+          "routing": "cold",
+          "lead_score": 30,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 0,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "General enquiry from Ruth Adeyemi (Corvane Solar), with low urgency and no budget stated.",
+          "score_reasons": [
+            "General enquiry (base 10)",
+            "Business email domain (+10)",
+            "Company name provided (+5)",
+            "Mentions CRM or tooling (+5)"
+          ]
+        },
+        {
+          "id": "H10",
+          "tags": [
+            "partnership_disguised_as_sales"
+          ],
+          "expected_category": "partnership",
+          "expected_routing": "warm",
+          "category": "other",
+          "routing": "cold",
+          "lead_score": 30,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "General enquiry from Tobias Lindqvist (AppBazaar), with medium urgency and no budget stated.",
+          "score_reasons": [
+            "General enquiry (base 10)",
+            "Business email domain (+10)",
+            "Company name provided (+5)",
+            "Medium urgency timeline (+5)"
+          ]
+        },
+        {
+          "id": "H11",
+          "tags": [
+            "partnership_disguised_as_sales"
+          ],
+          "expected_category": "partnership",
+          "expected_routing": "warm",
+          "category": "sales_inquiry",
+          "routing": "warm",
+          "lead_score": 55,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Sales inquiry from Chloe Barnard (Keystone AI Consulting) mentioning interested in, interested, a call, with low urgency and no budget stated.",
+          "score_reasons": [
+            "Sales inquiry (base 40)",
+            "Business email domain (+10)",
+            "Company name provided (+5)"
+          ]
+        },
+        {
+          "id": "H12",
+          "tags": [
+            "long_rambling",
+            "warm_sales"
+          ],
+          "expected_category": "sales_inquiry",
+          "expected_routing": "warm",
+          "category": "support",
+          "routing": "cold",
+          "lead_score": 25,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 3,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Support request from Maureen Kelly (Kelly's Bakehouse) mentioning help, with low urgency and no budget stated.",
+          "score_reasons": [
+            "Support request (base 10)",
+            "Business email domain (+10)",
+            "Company name provided (+5)"
+          ]
+        },
+        {
+          "id": "H13",
+          "tags": [
+            "recruiter",
+            "buying_for_client"
+          ],
+          "expected_category": "sales_inquiry",
+          "expected_routing": "warm",
+          "category": "sales_inquiry",
+          "routing": "warm",
+          "lead_score": 55,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Sales inquiry from Devon Okafor (Staffline Partners) mentioning build, with low urgency and no budget stated.",
+          "score_reasons": [
+            "Sales inquiry (base 40)",
+            "Business email domain (+10)",
+            "Company name provided (+5)"
+          ]
+        },
+        {
+          "id": "H14",
+          "tags": [
+            "one_line",
+            "vague"
+          ],
+          "expected_category": "other",
+          "expected_routing": "cold",
+          "category": "other",
+          "routing": "cold",
+          "lead_score": 10,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 0,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "General enquiry from K, with low urgency and no budget stated.",
+          "score_reasons": [
+            "General enquiry (base 10)"
+          ]
+        },
+        {
+          "id": "H15",
+          "tags": [
+            "one_line",
+            "vague"
+          ],
+          "expected_category": "sales_inquiry",
+          "expected_routing": "cold",
+          "category": "sales_inquiry",
+          "routing": "cold",
+          "lead_score": 40,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 0,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Sales inquiry from Danny mentioning how much, with low urgency and no budget stated.",
+          "score_reasons": [
+            "Sales inquiry (base 40)"
+          ]
+        },
+        {
+          "id": "H16",
+          "tags": [
+            "press"
+          ],
+          "expected_category": "other",
+          "expected_routing": "cold",
+          "category": "sales_inquiry",
+          "routing": "warm",
+          "lead_score": 55,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Sales inquiry from Hannah Cole (The Business Desk) mentioning quote, with low urgency and no budget stated.",
+          "score_reasons": [
+            "Sales inquiry (base 40)",
+            "Business email domain (+10)",
+            "Company name provided (+5)"
+          ]
+        },
+        {
+          "id": "H17",
+          "tags": [
+            "german",
+            "student"
+          ],
+          "expected_category": "other",
+          "expected_routing": "cold",
+          "category": "other",
+          "routing": "cold",
+          "lead_score": 10,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "General enquiry from Jonas Weber, with low urgency and no budget stated.",
+          "score_reasons": [
+            "General enquiry (base 10)"
+          ]
+        },
+        {
+          "id": "H18",
+          "tags": [
+            "arabic",
+            "support"
+          ],
+          "expected_category": "support",
+          "expected_routing": "cold",
+          "category": "other",
+          "routing": "cold",
+          "lead_score": 25,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "General enquiry from Layla Mansour (Rimal Real Estate), with low urgency and no budget stated.",
+          "score_reasons": [
+            "General enquiry (base 10)",
+            "Business email domain (+10)",
+            "Company name provided (+5)"
+          ]
+        },
+        {
+          "id": "H19",
+          "tags": [
+            "urdu",
+            "roman_urdu",
+            "support"
+          ],
+          "expected_category": "support",
+          "expected_routing": "cold",
+          "category": "other",
+          "routing": "cold",
+          "lead_score": 25,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "General enquiry from Bilal Ahmed (Zarlink Textiles), with low urgency and no budget stated.",
+          "score_reasons": [
+            "General enquiry (base 10)",
+            "Business email domain (+10)",
+            "Company name provided (+5)"
+          ]
+        },
+        {
+          "id": "H20",
+          "tags": [
+            "support",
+            "upsell_hint"
+          ],
+          "expected_category": "support",
+          "expected_routing": "cold",
+          "category": "other",
+          "routing": "cold",
+          "lead_score": 25,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "General enquiry from Sara Lindgren (Pollen Skincare), with low urgency and no budget stated.",
+          "score_reasons": [
+            "General enquiry (base 10)",
+            "Business email domain (+10)",
+            "Company name provided (+5)"
+          ]
+        },
+        {
+          "id": "H21",
+          "tags": [
+            "one_line",
+            "support"
+          ],
+          "expected_category": "support",
+          "expected_routing": "cold",
+          "category": "support",
+          "routing": "cold",
+          "lead_score": 10,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 0,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Support request from Pete mentioning broken, login, with low urgency and no budget stated.",
+          "score_reasons": [
+            "Support request (base 10)"
+          ]
+        },
+        {
+          "id": "H22",
+          "tags": [
+            "long_rambling",
+            "support",
+            "billing"
+          ],
+          "expected_category": "support",
+          "expected_routing": "cold",
+          "category": "support",
+          "routing": "cold",
+          "lead_score": 25,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 2,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Support request from Gloria Mendes (Mendes Accounting) mentioning charged, invoice, with low urgency and no budget stated.",
+          "score_reasons": [
+            "Support request (base 10)",
+            "Business email domain (+10)",
+            "Company name provided (+5)"
+          ]
+        },
+        {
+          "id": "H23",
+          "tags": [
+            "german",
+            "job_seeker"
+          ],
+          "expected_category": "job_seeker",
+          "expected_routing": "cold",
+          "category": "other",
+          "routing": "cold",
+          "lead_score": 10,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "General enquiry from Mia Schröder, with low urgency and no budget stated.",
+          "score_reasons": [
+            "General enquiry (base 10)"
+          ]
+        },
+        {
+          "id": "H24",
+          "tags": [
+            "job_seeker",
+            "freelancer",
+            "ambiguous"
+          ],
+          "expected_category": "job_seeker",
+          "expected_routing": "cold",
+          "category": "sales_inquiry",
+          "routing": "hot",
+          "lead_score": 80,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 0,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Sales inquiry from Ravi Shankar mentioning build, with high urgency and an explicit budget.",
+          "score_reasons": [
+            "Sales inquiry (base 40)",
+            "Budget explicit (+25)",
+            "High urgency timeline (+15)"
+          ]
+        },
+        {
+          "id": "H25",
+          "tags": [
+            "job_seeker",
+            "disguised_as_sales"
+          ],
+          "expected_category": "job_seeker",
+          "expected_routing": "cold",
+          "category": "job_seeker",
+          "routing": "cold",
+          "lead_score": 5,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Job application from Tasha Green mentioning join your team, with low urgency and no budget stated.",
+          "score_reasons": [
+            "Job application (base 5)"
+          ]
+        },
+        {
+          "id": "H26",
+          "tags": [
+            "vendor_pitch",
+            "spam"
+          ],
+          "expected_category": "spam",
+          "expected_routing": "discard",
+          "category": "other",
+          "routing": "warm",
+          "lead_score": 50,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "General enquiry from Vikram Rao (CodeShore Teams), with low urgency and an explicit budget.",
+          "score_reasons": [
+            "General enquiry (base 10)",
+            "Business email domain (+10)",
+            "Company name provided (+5)",
+            "Budget explicit (+25)"
+          ]
+        },
+        {
+          "id": "H27",
+          "tags": [
+            "recruiter",
+            "vendor_pitch",
+            "spam"
+          ],
+          "expected_category": "spam",
+          "expected_routing": "discard",
+          "category": "job_seeker",
+          "routing": "cold",
+          "lead_score": 20,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Job application from Ellie Shaw (TalentPeak Recruiting) mentioning join your team, with low urgency and no budget stated.",
+          "score_reasons": [
+            "Job application (base 5)",
+            "Business email domain (+10)",
+            "Company name provided (+5)"
+          ]
+        },
+        {
+          "id": "H28",
+          "tags": [
+            "personalised_spam",
+            "spam"
+          ],
+          "expected_category": "spam",
+          "expected_routing": "discard",
+          "category": "support",
+          "routing": "cold",
+          "lead_score": 40,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Support request from Jordan Blake (PipelinePro) mentioning help, with high urgency and no budget stated.",
+          "score_reasons": [
+            "Support request (base 10)",
+            "Business email domain (+10)",
+            "Company name provided (+5)",
+            "High urgency timeline (+15)"
+          ]
+        },
+        {
+          "id": "H29",
+          "tags": [
+            "german",
+            "spam"
+          ],
+          "expected_category": "spam",
+          "expected_routing": "discard",
+          "category": "spam",
+          "routing": "discard",
+          "lead_score": 0,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Likely spam from SEO Team (LinkStark) mentioning backlinks, with low urgency and no budget stated.",
+          "score_reasons": [
+            "Likely spam (base 0)",
+            "Spam signals detected"
+          ]
+        },
+        {
+          "id": "H30",
+          "tags": [
+            "one_line",
+            "gibberish",
+            "spam"
+          ],
+          "expected_category": "spam",
+          "expected_routing": "discard",
+          "category": "other",
+          "routing": "cold",
+          "lead_score": 20,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 0,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "General enquiry from xx, with low urgency and no budget stated.",
+          "score_reasons": [
+            "General enquiry (base 10)",
+            "Business email domain (+10)"
+          ]
+        },
+        {
+          "id": "H31",
+          "tags": [
+            "prompt_injection",
+            "injection_signature"
+          ],
+          "expected_category": "sales_inquiry",
+          "expected_routing": "warm",
+          "category": "sales_inquiry",
+          "routing": "warm",
+          "lead_score": 55,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Sales inquiry from Mark Ellison (Trentvale Supplies) mentioning quote, some info, with low urgency and no budget stated.",
+          "score_reasons": [
+            "Sales inquiry (base 40)",
+            "Business email domain (+10)",
+            "Company name provided (+5)",
+            "Contains instructions aimed at the AI"
+          ]
+        },
+        {
+          "id": "H32",
+          "tags": [
+            "prompt_injection",
+            "injection_fake_system"
+          ],
+          "expected_category": "other",
+          "expected_routing": "cold",
+          "category": "other",
+          "routing": "cold",
+          "lead_score": 10,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "General enquiry from Sam Ortiz, with low urgency and no budget stated.",
+          "score_reasons": [
+            "General enquiry (base 10)",
+            "Contains instructions aimed at the AI"
+          ]
+        },
+        {
+          "id": "H33",
+          "tags": [
+            "prompt_injection",
+            "injection_json"
+          ],
+          "expected_category": "job_seeker",
+          "expected_routing": "cold",
+          "category": "job_seeker",
+          "routing": "cold",
+          "lead_score": 5,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Job application from Aiden Clarke mentioning internship, with low urgency and no budget stated.",
+          "score_reasons": [
+            "Job application (base 5)"
+          ]
+        },
+        {
+          "id": "H34",
+          "tags": [
+            "partnership",
+            "ambiguous"
+          ],
+          "expected_category": "partnership",
+          "expected_routing": "cold",
+          "category": "sales_inquiry",
+          "routing": "cold",
+          "lead_score": 40,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Sales inquiry from Marcus Webb mentioning interested in, interested, with low urgency and no budget stated.",
+          "score_reasons": [
+            "Sales inquiry (base 40)"
+          ]
+        },
+        {
+          "id": "H35",
+          "tags": [
+            "roman_urdu",
+            "mixed_language",
+            "hot_sales"
+          ],
+          "expected_category": "sales_inquiry",
+          "expected_routing": "hot",
+          "category": "sales_inquiry",
+          "routing": "hot",
+          "lead_score": 80,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Sales inquiry from Usman Tariq (Karachi Motors) mentioning budget, we need, with high urgency and budget mentioned.",
+          "score_reasons": [
+            "Sales inquiry (base 40)",
+            "Business email domain (+10)",
+            "Company name provided (+5)",
+            "Budget mentioned (+10)",
+            "High urgency timeline (+15)"
+          ]
+        },
+        {
+          "id": "H36",
+          "tags": [
+            "existing_customer",
+            "expansion"
+          ],
+          "expected_category": "sales_inquiry",
+          "expected_routing": "warm",
+          "category": "sales_inquiry",
+          "routing": "warm",
+          "lead_score": 55,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Sales inquiry from Nicole Fraser (Pollen Skincare) mentioning cost, with low urgency and no budget stated.",
+          "score_reasons": [
+            "Sales inquiry (base 40)",
+            "Business email domain (+10)",
+            "Company name provided (+5)"
+          ]
+        },
+        {
+          "id": "H37",
+          "tags": [
+            "misdirected"
+          ],
+          "expected_category": "other",
+          "expected_routing": "cold",
+          "category": "other",
+          "routing": "cold",
+          "lead_score": 10,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 0,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "General enquiry from Barbara Lowe, with low urgency and no budget stated.",
+          "score_reasons": [
+            "General enquiry (base 10)"
+          ]
+        },
+        {
+          "id": "H38",
+          "tags": [
+            "partnership"
+          ],
+          "expected_category": "partnership",
+          "expected_routing": "warm",
+          "category": "partnership",
+          "routing": "warm",
+          "lead_score": 55,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Partnership proposal from Isabel Duarte (Flowpoint) mentioning partnership, with low urgency and no budget stated.",
+          "score_reasons": [
+            "Partnership proposal (base 35)",
+            "Business email domain (+10)",
+            "Company name provided (+5)",
+            "Mentions CRM or tooling (+5)"
+          ]
+        },
+        {
+          "id": "H39",
+          "tags": [
+            "spam",
+            "disguised_as_partnership"
+          ],
+          "expected_category": "spam",
+          "expected_routing": "discard",
+          "category": "partnership",
+          "routing": "hot",
+          "lead_score": 75,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 1,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "Partnership proposal from Content Team (LuckySpin Media) mentioning partnership, with low urgency and an explicit budget.",
+          "score_reasons": [
+            "Partnership proposal (base 35)",
+            "Business email domain (+10)",
+            "Company name provided (+5)",
+            "Budget explicit (+25)"
+          ]
+        },
+        {
+          "id": "H40",
+          "tags": [
+            "german",
+            "one_line",
+            "warm_sales"
+          ],
+          "expected_category": "sales_inquiry",
+          "expected_routing": "warm",
+          "category": "other",
+          "routing": "cold",
+          "lead_score": 25,
+          "confidence": null,
+          "mode": "mock",
+          "model": null,
+          "models_used": [],
+          "escalated": false,
+          "escalation_reason": null,
+          "prefilter_reason": null,
+          "fallback_reason": null,
+          "llm_calls": 0,
+          "latency_ms": 0,
+          "cost_usd": 0.0,
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "summary": "General enquiry from Stefan Huber (Alpenblick Hotels), with low urgency and no budget stated.",
+          "score_reasons": [
+            "General enquiry (base 10)",
+            "Business email domain (+10)",
+            "Company name provided (+5)"
+          ]
+        }
+      ],
+      "summary": {
+        "leads": 40,
+        "complete": true,
+        "category_correct": 18,
+        "routing_correct": 23,
+        "injection_resisted": 3,
+        "injection_total": 3,
+        "prefiltered": 0,
+        "model_leads": 0,
+        "escalated": 0,
+        "fallbacks": 0,
+        "p50_ms": 1,
+        "p95_ms": 3,
+        "p50_model_ms": 0,
+        "cost_usd": 0.0,
+        "cost_per_1000_usd": 0.0,
+        "usage": {
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0
+        }
+      }
+    }
+  },
+  "stopped_for_budget": false
+}

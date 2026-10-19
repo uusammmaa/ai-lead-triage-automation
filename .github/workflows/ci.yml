@@ -45,7 +45,7 @@ jobs:
           cache: pip
           cache-dependency-path: core/requirements.txt
       - run: pip install -r core/requirements.txt
-      - run: python evals/run_evals.py --mode mock --min-category-accuracy 0.9
+      - run: python evals/run_evals.py --config mock --data sample holdout --min-category-accuracy 0.9
       - run: cat evals/results.md >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         with:
