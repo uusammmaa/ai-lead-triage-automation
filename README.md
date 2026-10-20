@@ -120,10 +120,42 @@ Without Docker:
 ```bash
 cd core && pip install -r requirements-dev.txt
 uvicorn app.main:app --reload          # http://localhost:8000
-pytest                                 # 113 tests
+pytest                                 # 118 tests
 cd .. && python evals/run_evals.py     # writes evals/results.md
 cd integrations/node && npm install && npm test   # 41 tests
 ```
+
+---
+
+## Deploy to Vercel
+
+The Python core also runs as a single Vercel Function (Hobby plan is enough). Docker and `docker compose` are unaffected.
+
+1. Import the repo in Vercel and set **Root Directory** to `core`. Leave build and output settings empty.
+2. Add the environment variables below (Project Settings, Environment Variables), then deploy.
+3. Check `https://<your-app>.vercel.app/health`, then call `/triage` with your `X-API-Key`.
+
+How Vercel finds the app: `pyproject.toml` sets `[tool.vercel] entrypoint = "app.main:app"` and lists the runtime dependencies (Vercel installs from `pyproject.toml`, Docker from `requirements.txt`; a test keeps them in sync). `.python-version` pins Python 3.12. `vercel.json` sets the framework to FastAPI, gives the function a `maxDuration` of 120 seconds (one Haiku run plus one possible Sonnet escalation, well under the Hobby cap of 300) and leaves `tests/` out of the bundle. `config/scoring_rules.yaml` ships with the function; the few-shot examples live in code.
+
+| Variable | Notes |
+| --- | --- |
+| `LEAD_TRIAGE_API_KEY` | **Secret** (mark it Sensitive). Your Anthropic key. Without a key the core runs in mock mode |
+| `API_KEYS` | **Secret** (mark it Sensitive). Comma-separated keys accepted in `X-API-Key`. Always set it on a public URL: empty disables auth |
+| `ANTHROPIC_MODEL` | Default `claude-haiku-5-5` |
+| `ESCALATION_MODEL`, `ESCALATION_CONFIDENCE_THRESHOLD` | Default `claude-sonnet-5-5` and `0.6`. Empty model disables escalation |
+| `MOCK_MODE` | `auto` (mock only when no key) |
+| `ANTHROPIC_EFFORT`, `ANTHROPIC_SERVER_SIDE_FALLBACK` | Default `low` and `true` |
+| `PROMPT_CACHING`, `FEW_SHOT_EXAMPLES`, `RULES_PREFILTER` | Default `true` |
+| `MAX_OUTPUT_TOKENS`, `TEMPERATURE` | Default `1500` and empty |
+| `RATE_LIMIT_PER_MINUTE` | Default `60`, per key **per instance** (see below) |
+| `CORS_ORIGINS` | The browser origins that call the API, for example your form's URL |
+| `ENABLE_HOMEPAGE_FETCH`, `LOG_LEVEL` | Default `false` and `INFO` |
+| `SCORING_RULES_PATH` | Leave unset to use the bundled `config/scoring_rules.yaml` |
+
+Serverless notes:
+- **Rate limit is per instance.** The limiter lives in memory, and Vercel may run several instances at once, each with its own counters, so the real ceiling is `RATE_LIMIT_PER_MINUTE` times the number of warm instances. It fails closed: a limit of 0 denies everything, and once 10,000 keys are tracked a new key gets 429 until idle ones expire. For a hard global limit, move it to a shared store such as Redis, or add a Vercel Firewall rate-limit rule.
+- **No disk writes.** Logs go to stdout (visible in Vercel logs) and nothing is written to disk, so the read-only function filesystem is fine.
+- **Counters reset.** The `stats` block on `/health` is per instance and resets on cold starts.
 
 ---
 
@@ -171,7 +203,7 @@ Measured on the live evals (prompt caching on, pre-filter on): **$0.51 to $0.61 
 | AI outage or refusal | Falls back to the rules engine; server-side model fallback on refusals for models that support it (`ANTHROPIC_SERVER_SIDE_FALLBACK`) |
 | Uncertain answers | The model returns a 0 to 1 confidence; below the threshold the lead is re-run once on the escalation model |
 | Prompt injection | Lead wrapped as data, explicit system rules, injection tripwire, routing decided in code, injected leads capped at warm |
-| Auth and abuse | `X-API-Key` (constant-time compare), per-key sliding-window rate limit, CORS allow-list from env |
+| Auth and abuse | `X-API-Key` (constant-time compare), per-key sliding-window rate limit (in memory, so per instance on serverless), CORS allow-list from env |
 | Observability | One JSON log line per request and per lead, with tokens, cost, mode and latency; message bodies are never logged |
 | SSRF | Homepage fetch is off by default, domain-validated, blocks private and loopback IPs, 3 second timeout |
 | Duplicates | Node worker hashes each lead; redeliveries are not re-triaged, and only failed destinations retry |
@@ -197,7 +229,7 @@ Measured on the live evals (prompt caching on, pre-filter on): **$0.51 to $0.61 
 ## Project structure
 
 ```
-core/                 Python AI core (FastAPI, Claude agent, rules engine, tests, Dockerfile)
+core/                 Python AI core (FastAPI, Claude agent, rules engine, tests, Dockerfile, vercel.json)
 integrations/n8n/     Importable n8n workflow + setup guide
 integrations/zapier/  Step-by-step Zap build + Code by Zapier snippet
 integrations/make/    Make blueprint + manual build guide

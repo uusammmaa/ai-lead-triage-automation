@@ -3,6 +3,7 @@ from dataclasses import replace
 from fastapi.testclient import TestClient
 
 from app.main import create_app
+from app.security import RateLimiter
 
 LEAD = {"name": "Ana", "email": "ana@acme.example.com", "message": "Need a quote", "source": "test"}
 
@@ -59,3 +60,22 @@ def test_cors_allows_configured_origin_only(client):
         headers={"Origin": "https://evil.example.com", "Access-Control-Request-Method": "POST"},
     )
     assert "access-control-allow-origin" not in blocked.headers
+
+
+def test_rate_limiter_fails_closed_on_zero_limit():
+    allowed, remaining, retry_after = RateLimiter(0).check("k")
+    assert (allowed, remaining) == (False, 0) and retry_after > 0
+
+
+def test_rate_limiter_caps_tracked_keys():
+    limiter = RateLimiter(5, max_keys=2)
+    assert limiter.check("a")[0] and limiter.check("b")[0]
+    # Full of live buckets: a new key is denied, existing keys keep working.
+    assert limiter.check("c")[0] is False
+    assert limiter.check("a")[0] is True
+
+
+def test_rate_limiter_frees_idle_keys():
+    limiter = RateLimiter(5, window_seconds=0.0, max_keys=1)
+    assert limiter.check("a")[0]
+    assert limiter.check("b")[0]  # "a" is outside the window, so it is pruned

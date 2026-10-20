@@ -17,18 +17,36 @@ api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
 
 
 class RateLimiter:
-    """In-memory sliding window. Fine for one instance; swap for Redis when scaling out."""
+    """In-memory sliding window. Fine for one instance; swap for Redis when scaling out.
 
-    def __init__(self, limit_per_minute: int, window_seconds: float = 60.0):
+    On serverless hosts each warm instance keeps its own buckets, so the limit is per
+    instance. It fails closed: a non-positive limit denies, and when max_keys buckets are
+    live a new key is denied rather than evicting someone else's history.
+    """
+
+    def __init__(self, limit_per_minute: int, window_seconds: float = 60.0, max_keys: int = 10_000):
         self.limit = limit_per_minute
         self.window = window_seconds
+        self.max_keys = max_keys
         self._hits: dict[str, deque[float]] = defaultdict(deque)
         self._lock = threading.Lock()
+
+    def _prune(self, now: float) -> None:
+        stale = [k for k, hits in self._hits.items() if not hits or now - hits[-1] >= self.window]
+        for k in stale:
+            del self._hits[k]
 
     def check(self, key: str) -> tuple[bool, int, int]:
         """Return (allowed, remaining, retry_after_seconds)."""
         now = time.monotonic()
+        retry_window = int(self.window) + 1
+        if self.limit <= 0:
+            return False, 0, retry_window
         with self._lock:
+            if key not in self._hits and len(self._hits) >= self.max_keys:
+                self._prune(now)
+                if len(self._hits) >= self.max_keys:
+                    return False, 0, retry_window
             hits = self._hits[key]
             while hits and now - hits[0] >= self.window:
                 hits.popleft()

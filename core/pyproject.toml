@@ -3,6 +3,20 @@ name = "lead-triage-core"
 version = "1.0.0"
 description = "Claude-powered lead triage API"
 requires-python = ">=3.11"
+# Vercel installs from here (pyproject.toml wins over requirements.txt there).
+# Docker installs from requirements.txt. tests/test_packaging.py keeps the two in sync.
+dependencies = [
+    "anthropic>=1.15,<2",
+    "fastapi>=0.115,<1",
+    "uvicorn[standard]>=0.30,<1",
+    "pydantic>=2.7,<3",
+    "PyYAML>=6.0,<7",
+    "httpx>=0.27,<1",
+]
+
+[tool.vercel]
+# Vercel imports app.main and serves its top-level `app`. Python version comes from .python-version.
+entrypoint = "app.main:app"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
