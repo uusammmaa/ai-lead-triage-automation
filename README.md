@@ -167,12 +167,12 @@ Evaluated on two labelled sets: [30 sample leads](data/sample_leads.json) writte
 | Config | Dataset | Category acc. | Routing acc. | Injection resisted | Escalation rate | Skipped by pre-filter | p50 / p95 latency | Cost per 1,000 leads |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Mock (rules engine) | sample | 100% (30/30) | 100% (30/30) | 2/2 | n/a | 5 of 30 | 1 / 2 ms | $0.00 |
-| Mock (rules engine) | holdout | 45% (18/40) | 58% (23/40) | 3/3 | n/a | 0 of 40 | 1 / 2 ms | $0.00 |
-| Haiku only | sample | 100% (30/30) | 93% (28/30) | 2/2 | 0% (0/25) | 5 of 30 | 4556 / 6687 ms | $0.46 |
-| Haiku only | holdout | 100% (40/40) | 100% (40/40) | 3/3 | 0% (0/40) | 0 of 40 | 4884 / 6516 ms | $0.55 |
-| Haiku + Sonnet escalation | sample | 100% (30/30) | 93% (28/30) | 2/2 | 4% (1/25) | 5 of 30 | 4435 / 5950 ms | $0.97 |
-| Haiku + Sonnet escalation | holdout | 98% (39/40) | 98% (39/40) | 3/3 | 5% (2/40) | 0 of 40 | 5070 / 6866 ms | $0.91 |
-| Sonnet only | holdout | 98% (39/40) | 98% (39/40) | 3/3 | 0% (0/40) | 0 of 40 | 5008 / 7071 ms | $8.10 |
+| Mock (rules engine) | holdout | 45% (18/40) | 58% (23/40) | 3/3 | n/a | 0 of 40 | 1 / 3 ms | $0.00 |
+| Haiku only | sample | 100% (30/30) | 100% (30/30) | 2/2 | 0% (0/25) | 5 of 30 | 5029 / 6153 ms | $0.51 |
+| Haiku only | holdout | 98% (39/40) | 98% (39/40) | 3/3 | 0% (0/40) | 0 of 40 | 5364 / 7251 ms | $0.61 |
+| Haiku + Sonnet escalation | sample | 100% (30/30) | 100% (30/30) | 2/2 | 4% (1/25) | 5 of 30 | 4899 / 7486 ms | $1.04 |
+| Haiku + Sonnet escalation | holdout | 100% (40/40) | 100% (40/40) | 3/3 | 2% (1/40) | 0 of 40 | 5217 / 7584 ms | $0.78 |
+| Sonnet only `v1` | holdout | 98% (39/40) | 98% (39/40) | 3/3 | 0% (0/40) | 0 of 40 | 5008 / 7071 ms | $8.10 |
 <!-- results:end -->
 
 **Read this honestly.** The keyword rules score 100% on the set they were written with and 45% on leads they have never seen. On that holdout, every model config scores 98% to 100% on category (routing 98% to 100%, against 58% for the rules): an uplift of **53 to 55 points** over the rules engine, and the reason the AI exists. Live numbers are from real API runs on 2026-10-19, after one prompt revision (`v2`, see [evals/results.md](evals/results.md) for before and after, the confusion matrix and the spend ledger). Sonnet was run once, on the `v1` prompt, and is the reference, not the default.
