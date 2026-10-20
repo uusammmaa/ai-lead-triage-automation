@@ -195,3 +195,24 @@ def rules_triage(lead: LeadIn, rules: ScoringRules) -> tuple[LLMTriage, dict[str
         suggested_reply=_reply(category, lead, rules),
     )
     return triage, enrichment
+
+
+def prefilter_reason(lead: LeadIn, rules: ScoringRules) -> str | None:
+    """Return why a lead can be discarded without calling the model, or None.
+
+    Deliberately conservative: a false discard loses a real lead, a miss only
+    costs one cheap model call. Thresholds live in scoring_rules.yaml.
+    """
+    cfg = rules.raw.get("prefilter", {}) or {}
+    enrichment = enrich_email_domain(lead.email, rules)
+    if cfg.get("discard_disposable_email", True) and enrichment["email_type"] == "disposable":
+        return "disposable_email"
+    text = strip_injection(f"{lead.company or ''}\n{lead.message}").lower()
+    scores: dict[str, int] = {}
+    for category, spec in rules.raw["keywords"].items():
+        scores[category] = len(_hits(text, spec["terms"])) * int(spec.get("weight", 1))
+    spam = scores.get("spam", 0)
+    others = max((v for k, v in scores.items() if k != "spam"), default=0)
+    if spam >= int(cfg.get("spam_min_score", 6)) and spam >= float(cfg.get("spam_dominance", 2.0)) * max(others, 1):
+        return "spam_keywords"
+    return None

@@ -123,6 +123,7 @@ def final_json(**overrides) -> SimpleNamespace:
         "summary": "Freight company wants AI lead qualification with a $15k budget.",
         "company_guess": "Brightpath Logistics",
         "suggested_reply": "Hi Dana, thanks for reaching out. Could we book a call this week?",
+        "confidence": 0.9,
     }
     body.update(overrides)
     return response([text_block(json.dumps(body))], "end_turn", input_tokens=2500, output_tokens=350)
